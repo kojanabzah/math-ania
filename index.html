@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תרגול מתמטיקה - כיתה ה'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .topic-select {
+            margin: 30px 0;
+        }
+
+        .topic-select label {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .topic-select select {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .quiz-screen {
+            display: none;
+        }
+
+        .question-container {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .prev-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .next-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .submit-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 3em;
+            margin: 30px 0;
+            color: #667eea;
+        }
+
+        .score-details {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .score-item {
+            font-size: 1.3em;
+            margin: 15px 0;
+            padding: 10px;
+        }
+
+        .correct {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .review-answers {
+            margin-top: 30px;
+        }
+
+        .answer-review {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: right;
+        }
+
+        .answer-review.correct-answer {
+            border-right: 5px solid #28a745;
+        }
+
+        .answer-review.wrong-answer {
+            border-right: 5px solid #dc3545;
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 3px;
+            font-size: 1em;
+        }
+
+        .numerator {
+            border-bottom: 2px solid #333;
+            padding: 0 5px 2px 5px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .denominator {
+            padding: 2px 5px 0 5px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .mixed-number {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            vertical-align: middle;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .emoji {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 תרגול מתמטיקה לכיתה ה'</h1>
+
+        <!-- Start Screen -->
+        <div class="start-screen" id="startScreen">
+            <div class="topic-select">
+                <label>בחרי נושא לתרגול:</label>
+                <select id="topicSelect">
+                    <option value="fractions">חלק א - שברים</option>
+                    <option value="operations">חלק ב - פעולות במספרים טבעיים</option>
+                    <option value="mixed">תרגול משולב (שניהם)</option>
+                </select>
+            </div>
+            <button class="start-btn" onclick="startQuiz()">התחל מבחן! 🚀</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div class="quiz-screen" id="quizScreen">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="question-container" id="questionContainer"></div>
+            <div class="navigation">
+                <button class="nav-btn prev-btn" onclick="prevQuestion()" id="prevBtn">← הקודם</button>
+                <button class="nav-btn next-btn" onclick="nextQuestion()" id="nextBtn">הבא →</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="emoji" id="resultEmoji"></div>
+            <h2>סיימת את המבחן!</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <div class="score-details">
+                <div class="score-item">
+                    תשובות נכונות: <span class="correct" id="correctCount"></span>
+                </div>
+                <div class="score-item">
+                    תשובות שגויות: <span class="incorrect" id="incorrectCount"></span>
+                </div>
+            </div>
+            <div class="review-answers" id="reviewAnswers"></div>
+            <button class="start-btn" onclick="restartQuiz()">התחל מבחן חדש 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to convert text fractions to HTML display
+        function formatFraction(text) {
+            // Handle mixed numbers like 2⅔ or 2 2/3
+            text = text.replace(/(\d+)\s*(\d+)\/(\d+)/g, '<span class="mixed-number">$1<span class="fraction"><span class="numerator">$2</span><span class="denominator">$3</span></span></span>');
+            
+            // Handle simple fractions like 3/8
+            text = text.replace(/(\d+)\/(\d+)/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">$2</span></span>');
+            
+            // Handle special characters
+            text = text.replace(/⅔/g, '<span class="fraction"><span class="numerator">2</span><span class="denominator">3</span></span>');
+            text = text.replace(/¼/g, '<span class="fraction"><span class="numerator">1</span><span class="denominator">4</span></span>');
+            text = text.replace(/½/g, '<span class="fraction"><span class="numerator">1</span><span class="denominator">2</span></span>');
+            text = text.replace(/¾/g, '<span class="fraction"><span class="numerator">3</span><span class="denominator">4</span></span>');
+            
+            return text;
+        }
+
+        const questions = {
+            fractions: [
+                {q: "3/8 + 2/8 = ?", a: "5/8"},
+                {q: "7/10 - 3/10 = ?", a: "4/10"},
+                {q: "1 - 1/7 = ?", a: "6/7"},
+                {q: "4/11 + 6/11 = ?", a: "10/11"},
+                {q: "3/4 × 4 = ?", a: "3"},
+                {q: "7 × 1/7 = ?", a: "1"},
+                {q: "2 2/3 - 4/6 = ?", a: "2"},
+                {q: "3 1/4 - 2 = ?", a: "1 1/4"},
+                {q: "1/2 + 1/4 × 2 = ?", a: "1"},
+                {q: "בעוגה יש 10 פרוסות. אניה אכלה 2 פרוסות. איזה חלק אכלה? (כתבי בצורת שבר)", a: "2/10"}
+            ],
+            operations: [
+                {q: "40 × 30 = ?", a: "1200"},
+                {q: "48 × 10 = ?", a: "480"},
+                {q: "6,000 ÷ 20 = ?", a: "300"},
+                {q: "120 × 20 = ?", a: "2400"},
+                {q: "3,000 ÷ 50 = ?", a: "60"},
+                {q: "200 × 50 = ? (השתמשי: 200 × 50 = 2 × 5000)", a: "10000"},
+                {q: "8 × 83 = ? (פרקי ל-80 + 3)", a: "664"},
+                {q: "203 × 5 = ?", a: "1015"},
+                {q: "344 × 2 = ?", a: "688"},
+                {q: "בקופה היו 350 מטבעות של 10 שקלים. כמה כסף היה בקופה? (בשקלים)", a: "3500"}
+            ]
+        };
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let selectedTopic = '';
+
+        function startQuiz() {
+            selectedTopic = document.getElementById('topicSelect').value;
+            
+            if (selectedTopic === 'mixed') {
+                currentQuestions = [...questions.fractions, ...questions.operations];
+            } else {
+                currentQuestions = [...questions[selectedTopic]];
+            }
+
+            // Shuffle questions
+            currentQuestions.sort(() => Math.random() - 0.5);
+            currentQuestions = currentQuestions.slice(0, 10); // Take 10 questions
+
+            userAnswers = new Array(currentQuestions.length).fill('');
+            currentQuestionIndex = 0;
+
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'block';
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            const container = document.getElementById('questionContainer');
+            
+            container.innerHTML = `
+                <div class="question-number">שאלה ${currentQuestionIndex + 1} מתוך ${currentQuestions.length}</div>
+                <div class="question-text">${formatFraction(question.q)}</div>
+                <input type="text" class="answer-input" id="answerInput" 
+                       value="${userAnswers[currentQuestionIndex]}" 
+                       placeholder="הכניסי את התשובה כאן">
+            `;
+
+            document.getElementById('answerInput').focus();
+            document.getElementById('answerInput').addEventListener('input', saveAnswer);
+            
+            updateProgressBar();
+            updateNavigationButtons();
+        }
+
+        function saveAnswer() {
+            userAnswers[currentQuestionIndex] = document.getElementById('answerInput').value.trim();
+        }
+
+        function nextQuestion() {
+            saveAnswer();
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            saveAnswer();
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'block';
+            
+            if (currentQuestionIndex === currentQuestions.length - 1) {
+                nextBtn.textContent = 'סיום ✓';
+                nextBtn.className = 'nav-btn submit-btn';
+            } else {
+                nextBtn.textContent = 'הבא →';
+                nextBtn.className = 'nav-btn next-btn';
+            }
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function normalizeAnswer(answer) {
+            return answer.replace(/\s+/g, '').toLowerCase();
+        }
+
+        function showResults() {
+            let correctCount = 0;
+            const reviewHtml = [];
+
+            currentQuestions.forEach((question, index) => {
+                const userAnswer = normalizeAnswer(userAnswers[index]);
+                const correctAnswer = normalizeAnswer(question.a);
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) correctCount++;
+
+                reviewHtml.push(`
+                    <div class="answer-review ${isCorrect ? 'correct-answer' : 'wrong-answer'}">
+                        <strong>שאלה ${index + 1}:</strong> ${question.q}<br>
+                        <strong>התשובה שלך:</strong> ${userAnswers[index] || '(לא נענתה)'}<br>
+                        ${!isCorrect ? `<strong>תשובה נכונה:</strong> ${question.a}<br>` : ''}
+                        <strong>${isCorrect ? '✓ נכון!' : '✗ לא נכון'}</strong>
+                    </div>
+                `);
+            });
+
+            const incorrectCount = currentQuestions.length - correctCount;
+            const percentage = Math.round((correctCount / currentQuestions.length) * 100);
+
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            
+            document.getElementById('scoreDisplay').textContent = percentage + '%';
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('incorrectCount').textContent = incorrectCount;
+            document.getElementById('reviewAnswers').innerHTML = reviewHtml.join('');
+
+            // Set emoji based on score
+            let emoji = '🎉';
+            if (percentage === 100) emoji = '🏆';
+            else if (percentage >= 80) emoji = '😊';
+            else if (percentage >= 60) emoji = '🙂';
+            else emoji = '💪';
+            
+            document.getElementById('resultEmoji').textContent = emoji;
+        }
+
+        function restartQuiz() {
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+            currentQuestionIndex = 0;
+            userAnswers = [];
+        }
+
+        // Allow Enter key to move to next question
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('quizScreen').style.display === 'block') {
+                nextQuestion();
+            }
+        });
+    </script>
+</body>
+</html>
