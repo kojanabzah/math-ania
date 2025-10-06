@@ -352,279 +352,311 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>מבחן מתמטיקה - כיתה ה'</h1>
-        <div class="subtitle">תרגול למבחן מספר 1</div>
+<div class="container">
+    <h1>מבחן מתמטיקה - כיתה ה'</h1>
+    <div class="subtitle">תרגול למבחן מספר 1</div>
 
-        <div class="start-screen" id="startScreen">
-            <div class="part-select">
-                <div class="part-card" onclick="startPart('fractions')">
-                    <h2>חלק א' - שברים</h2>
-                    <ul>
-                        <li>השוואת שברים</li>
-                        <li>חיבור וחיסור שברים</li>
-                        <li>כפל שבר בשלם</li>
-                        <li>בעיות מילוליות</li>
-                    </ul>
-                </div>
-                
-                <div class="part-card operations" onclick="startPart('operations')">
-                    <h2>חלק ב' - פעולות</h2>
-                    <ul>
-                        <li>הגדלה והקטנה ×10/100/1000</li>
-                        <li>כפל עשרות שלמות</li>
-                        <li>כפל בחד ספרתי</li>
-                        <li>בעיות מילוליות</li>
-                    </ul>
-                </div>
+    <div class="start-screen" id="startScreen">
+        <div class="part-select">
+            <div class="part-card" onclick="startPart('fractions')">
+                <h2>חלק א' - שברים</h2>
+                <ul>
+                    <li>השוואת שברים</li>
+                    <li>חיבור וחיסור שברים</li>
+                    <li>כפל שבר בשלם</li>
+                    <li>בעיות מילוליות</li>
+                </ul>
             </div>
-        </div>
 
-        <div class="quiz-screen" id="quizScreen">
-            <div class="part-header" id="partHeader"></div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressBar"></div>
+            <div class="part-card operations" onclick="startPart('operations')">
+                <h2>חלק ב' - פעולות</h2>
+                <ul>
+                    <li>הגדלה והקטנה ×10/100/1000</li>
+                    <li>כפל עשרות שלמות</li>
+                    <li>כפל בחד ספרתי</li>
+                    <li>בעיות מילוליות</li>
+                </ul>
             </div>
-            <div class="question-container" id="questionContainer"></div>
-            <div class="navigation">
-                <button class="nav-btn prev-btn" onclick="prevQuestion()" id="prevBtn">הקודם</button>
-                <button class="nav-btn next-btn" onclick="nextQuestion()" id="nextBtn">הבא</button>
-            </div>
-        </div>
-
-        <div class="results-screen" id="resultsScreen">
-            <div class="emoji" id="resultEmoji"></div>
-            <h2>סיימת את המבחן!</h2>
-            <div class="score-display" id="scoreDisplay"></div>
-            <div class="score-details">
-                <div class="score-item">
-                    תשובות נכונות: <span class="correct" id="correctCount"></span>
-                </div>
-                <div class="score-item">
-                    תשובות שגויות: <span class="incorrect" id="incorrectCount"></span>
-                </div>
-            </div>
-            <div class="review-answers" id="reviewAnswers"></div>
-            <button class="start-btn" onclick="restartQuiz()">חזרה לבחירת חלק</button>
         </div>
     </div>
 
-    <script src="questions.json" type="application/json"></script>
-    <script>
-        function formatFraction(text) {
-            text = text.replace(/\?\/(\d+)/g, '<span class="fraction"><span class="numerator">?</span><span class="denominator">$1</span></span>');
-            text = text.replace(/(\d+)\/\?/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">?</span></span>');
-            text = text.replace(/(\d+)\s+(\d+)\/(\d+)/g, '<span>$1 <span class="fraction"><span class="numerator">$2</span><span class="denominator">$3</span></span></span>');
-            text = text.replace(/(\d+)\/(\d+)/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">$2</span></span>');
-            return text;
-        }
+    <div class="quiz-screen" id="quizScreen">
+        <div class="part-header" id="partHeader"></div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        <div class="question-container" id="questionContainer"></div>
+        <div class="navigation">
+            <button class="nav-btn prev-btn" onclick="prevQuestion()" id="prevBtn">הקודם</button>
+            <button class="nav-btn next-btn" onclick="nextQuestion()" id="nextBtn">הבא</button>
+        </div>
+    </div>
 
-        let questionBank = {};
-        let currentPart = '';
-        let currentQuestions = [];
-        let currentQuestionIndex = 0;
-        let userAnswers = [];
+    <div class="results-screen" id="resultsScreen">
+        <div class="emoji" id="resultEmoji"></div>
+        <h2>סיימת את המבחן!</h2>
+        <div class="score-display" id="scoreDisplay"></div>
+        <div class="score-details">
+            <div class="score-item">
+                תשובות נכונות: <span class="correct" id="correctCount"></span>
+            </div>
+            <div class="score-item">
+                תשובות שגויות: <span class="incorrect" id="incorrectCount"></span>
+            </div>
+        </div>
+        <div class="review-answers" id="reviewAnswers"></div>
+        <button class="start-btn" onclick="restartQuiz()">חזרה לבחירת חלק</button>
+    </div>
+</div>
 
-        async function loadQuestions() {
-            try {
-                const response = await fetch('questions.json');
-                if (response.ok) {
-                    questionBank = await response.json();
-                    console.log('השאלות נטענו מקובץ חיצוני!');
-                } else {
-                    throw new Error('לא נמצא קובץ חיצוני');
-                }
-            } catch (error) {
-                console.log('טוען שאלות מוטמעות...');
-                questionBank = {
-                    "fractions": [
-                        {q: "מה גדול יותר? (כתבי את השבר הגדול)", options: ["3/8", "5/8"], a: "5/8", type: "text"},
-                        {q: "כתבי < או > או = : 3/8 ___ 5/8", a: "<", type: "text"},
-                        {q: "השלימו: 7/8 > ?/8", a: "6", type: "text"},
-                        {q: "כמה זה:", fraction: "3/8 + 2/8", a: "5/8", type: "fraction"},
-                        {q: "כמה זה:", fraction: "7/10 - 3/10", a: "4/10", type: "fraction"},
-                        {q: "3/4 × 4 = ?", a: "3", type: "text"},
-                        {q: "בעוגה יש 10 פרוסות. אניה אכלה 2 פרוסות. איזה חלק אכלה?", a: "2/10", type: "fraction"}
-                    ],
-                    "operations": [
-                        {q: "48 × 10 = ?", a: "480", type: "text"},
-                        {q: "501 × 100 = ?", a: "50100", type: "text"},
-                        {q: "כתבי < או > או = : 200 × 10 ___ 200 × 5", a: ">", type: "text"},
-                        {q: "40 × 30 = ?", a: "1200", type: "text"},
-                        {q: "8 × 83 = ? (פרקי ל-80 + 3)", a: "664", type: "text"},
-                        {q: "בקופה היו 350 מטבעות של 10 שקלים. כמה כסף היה בקופה? (בשקלים)", a: "3500", type: "text"}
-                    ]
-                };
+<script src="questions.json" type="application/json"></script>
+<script>
+    function formatFraction(text) {
+        text = text.replace(/\?\/(\d+)/g, '<span class="fraction"><span class="numerator">?</span><span class="denominator">$1</span></span>');
+        text = text.replace(/(\d+)\/\?/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">?</span></span>');
+        text = text.replace(/(\d+)\s+(\d+)\/(\d+)/g, '<span>$1 <span class="fraction"><span class="numerator">$2</span><span class="denominator">$3</span></span></span>');
+        text = text.replace(/(\d+)\/(\d+)/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">$2</span></span>');
+        return text;
+    }
+
+    let questionBank = {};
+    let currentPart = '';
+    let currentQuestions = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+
+    async function loadQuestions() {
+        try {
+            const response = await fetch('questions.json');
+            if (response.ok) {
+                questionBank = await response.json();
+                console.log('השאלות נטענו מקובץ חיצוני!');
+            } else {
+                throw new Error('לא נמצא קובץ חיצוני');
             }
-            
-            document.querySelectorAll('.part-card').forEach(card => {
-                card.classList.add('loaded');
-            });
+        } catch (error) {
+            console.log('טוען שאלות מוטמעות...');
+            questionBank = {
+                "fractions": [
+                    {q: "מה גדול יותר? (כתבי את השבר הגדול)", options: ["3/8", "5/8"], a: "5/8", type: "text"},
+                    {q: "כתבי < או > או = : 3/8 ___ 5/8", a: "<", type: "text"},
+                    {q: "השלימו: 7/8 > ?/8", a: "6", type: "text"},
+                    {q: "כמה זה:", fraction: "3/8 + 2/8", a: "5/8", type: "fraction"},
+                    {q: "כמה זה:", fraction: "7/10 - 3/10", a: "4/10", type: "fraction"},
+                    {q: "3/4 × 4 = ?", a: "3", type: "text"},
+                    {q: "בעוגה יש 10 פרוסות. אניה אכלה 2 פרוסות. איזה חלק אכלה?", a: "2/10", type: "fraction"}
+                ],
+                "operations": [
+                    {q: "48 × 10 = ?", a: "480", type: "text"},
+                    {q: "501 × 100 = ?", a: "50100", type: "text"},
+                    {q: "כתבי < או > או = : 200 × 10 ___ 200 × 5", a: ">", type: "text"},
+                    {q: "40 × 30 = ?", a: "1200", type: "text"},
+                    {q: "8 × 83 = ? (פרקי ל-80 + 3)", a: "664", type: "text"},
+                    {q: "בקופה היו 350 מטבעות של 10 שקלים. כמה כסף היה בקופה? (בשקלים)", a: "3500", type: "text"}
+                ]
+            };
         }
 
-        window.addEventListener('load', loadQuestions);
+        document.querySelectorAll('.part-card').forEach(card => {
+            card.classList.add('loaded');
+        });
+    }
 
-        function startPart(part) {
-            if (!questionBank || !questionBank[part]) {
-                alert('אנא המתן, השאלות עדיין נטענות...');
-                return;
-            }
-            
-            currentPart = part;
-            currentQuestions = [...questionBank[part]];
-            currentQuestions.sort(() => Math.random() - 0.5);
-            currentQuestions = currentQuestions.slice(0, 15);
-            
-            userAnswers = currentQuestions.map(() => ({numerator: '', denominator: '', text: ''}));
-            currentQuestionIndex = 0;
+    window.addEventListener('load', loadQuestions);
 
-            document.getElementById('startScreen').style.display = 'none';
-            document.getElementById('quizScreen').style.display = 'block';
-            
-            const partName = part === 'fractions' ? 'חלק א\' - שברים' : 'חלק ב\' - פעולות במספרים טבעיים';
-            document.getElementById('partHeader').innerHTML = `<h2>${partName}</h2>`;
-            
-            showQuestion();
+    function startPart(part) {
+        if (!questionBank || !questionBank[part]) {
+            alert('אנא המתן, השאלות עדיין נטענות...');
+            return;
         }
 
-        function showQuestion() {
-            const question = currentQuestions[currentQuestionIndex];
-            const container = document.getElementById('questionContainer');
-            
-            const isMathExercise = /[\d\+\-\×\÷\=\<\>]/.test(question.q) && question.q.length < 80;
-            const questionClass = isMathExercise ? 'ltr' : '';
-            
-            let html = `
+        currentPart = part;
+        currentQuestions = [...questionBank[part]];
+        currentQuestions.sort(() => Math.random() - 0.5);
+        currentQuestions = currentQuestions.slice(0, 15);
+
+        userAnswers = currentQuestions.map(() => ({numerator: '', denominator: '', text: ''}));
+        currentQuestionIndex = 0;
+
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display = 'block';
+
+        const partName = part === 'fractions' ? 'חלק א\' - שברים' : 'חלק ב\' - פעולות במספרים טבעיים';
+        document.getElementById('partHeader').innerHTML = `<h2>${partName}</h2>`;
+
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const question = currentQuestions[currentQuestionIndex];
+        const container = document.getElementById('questionContainer');
+
+        const isMathExercise = /[\d\+\-\×\÷\=\<\>]/.test(question.q) && question.q.length < 80;
+        const questionClass = isMathExercise ? 'ltr' : '';
+
+        let html = `
                 <div class="question-number">שאלה ${currentQuestionIndex + 1} מתוך ${currentQuestions.length}</div>
             `;
 
-            if (question.type === 'fraction') {
-                html += `
-                    <div class="question-text">${question.q}</div>
+        // הצגת אפשרויות בפורמט שבר ויזואלי
+        if (question.options && Array.isArray(question.options)) {
+            html += `<div class="question-text ${questionClass}">${formatFraction(question.q)}</div>`;
+            html += `<div style="display:flex;gap:20px;justify-content:center;margin:20px 0;">`;
+            question.options.forEach((opt, idx) => {
+                html += `<button type="button" class="answer-input" style="max-width:120px;cursor:pointer;" onclick="userAnswers[currentQuestionIndex].text='${opt}';document.getElementById('answerInput').value='${opt}';">${formatFraction(opt)}</button>`;
+            });
+            html += `</div>`;
+            html += `<input type="text" class="answer-input" id="answerInput"
+                           value="${userAnswers[currentQuestionIndex].text}"
+                           placeholder="הכניסי את התשובה כאן">`;
+        }
+        else if (question.type === 'shape' || question.type === 'shapes') {
+            html += `<div class="question-text ${questionClass}">${formatFraction(question.q)}</div>`;
+            if (question.shapes && Array.isArray(question.shapes)) {
+                html += `<div style="display:flex;justify-content:center;margin:20px 0;">
+                    <svg width="300" height="150">
+                        ${question.shapes.map((shape, idx) => {
+                            if (shape.type === 'circle') {
+                                return `<circle cx='${shape.cx || 50 + idx*80}' cy='${shape.cy || 75}' r='${shape.r || 30}' fill='${shape.color || '#667eea'}' />`;
+                            } else if (shape.type === 'rect') {
+                                return `<rect x='${shape.x || 20 + idx*80}' y='${shape.y || 40}' width='${shape.width || 60}' height='${shape.height || 60}' fill='${shape.color || '#f093fb'}' />`;
+                            }
+                            return '';
+                        }).join('')}
+                    </svg>
+                </div>`;
+            }
+            html += `<input type="text" class="answer-input" id="answerInput"
+                           value="${userAnswers[currentQuestionIndex].text}"
+                           placeholder="הכניסי את התשובה כאן">
+                `;
+        } else if (question.type === 'fraction') {
+            html += `
+                    <div class="question-text">${formatFraction(question.q)}</div>
                     ${question.fraction ? `<div class="question-text ltr" style="font-size:1.8em; margin:20px 0;">${formatFraction(question.fraction)}</div>` : ''}
                     <div class="fraction-input-container">
                         <div class="fraction-input-wrapper">
-                            <input type="number" class="fraction-input" id="numeratorInput" 
-                                   value="${userAnswers[currentQuestionIndex].numerator}" 
+                            <input type="number" class="fraction-input" id="numeratorInput"
+                                   value="${userAnswers[currentQuestionIndex].numerator}"
                                    placeholder="מונה" min="0">
                             <div class="fraction-line"></div>
-                            <input type="number" class="fraction-input" id="denominatorInput" 
-                                   value="${userAnswers[currentQuestionIndex].denominator}" 
+                            <input type="number" class="fraction-input" id="denominatorInput"
+                                   value="${userAnswers[currentQuestionIndex].denominator}"
                                    placeholder="מכנה" min="1">
                         </div>
                     </div>
                 `;
-            } else {
-                html += `
+        } else {
+            html += `
                     <div class="question-text ${questionClass}">${formatFraction(question.q)}</div>
-                    <input type="text" class="answer-input" id="answerInput" 
-                           value="${userAnswers[currentQuestionIndex].text}" 
+                    <input type="text" class="answer-input" id="answerInput"
+                           value="${userAnswers[currentQuestionIndex].text}"
                            placeholder="הכניסי את התשובה כאן">
                 `;
+        }
+
+        container.innerHTML = html;
+
+        if (question.type === 'fraction') {
+            document.getElementById('numeratorInput').addEventListener('input', saveFractionAnswer);
+            document.getElementById('denominatorInput').addEventListener('input', saveFractionAnswer);
+            document.getElementById('numeratorInput').focus();
+        } else {
+            document.getElementById('answerInput').focus();
+            document.getElementById('answerInput').addEventListener('input', saveTextAnswer);
+        }
+
+        updateProgressBar();
+        updateNavigationButtons();
+    }
+
+    function saveTextAnswer() {
+        userAnswers[currentQuestionIndex].text = document.getElementById('answerInput').value.trim();
+    }
+
+    function saveFractionAnswer() {
+        userAnswers[currentQuestionIndex].numerator = document.getElementById('numeratorInput').value;
+        userAnswers[currentQuestionIndex].denominator = document.getElementById('denominatorInput').value;
+    }
+
+    function getUserAnswer(index) {
+        const question = currentQuestions[index];
+        const answer = userAnswers[index];
+
+        if (question.type === 'fraction') {
+            if (answer.numerator && answer.denominator) {
+                return `${answer.numerator}/${answer.denominator}`;
             }
+            return '';
+        }
+        return answer.text;
+    }
 
-            container.innerHTML = html;
-            
-            if (question.type === 'fraction') {
-                document.getElementById('numeratorInput').addEventListener('input', saveFractionAnswer);
-                document.getElementById('denominatorInput').addEventListener('input', saveFractionAnswer);
-                document.getElementById('numeratorInput').focus();
-            } else {
-                document.getElementById('answerInput').focus();
-                document.getElementById('answerInput').addEventListener('input', saveTextAnswer);
-            }
-            
-            updateProgressBar();
-            updateNavigationButtons();
+    function nextQuestion() {
+        if (currentQuestions[currentQuestionIndex].type === 'fraction') {
+            saveFractionAnswer();
+        } else {
+            saveTextAnswer();
         }
 
-        function saveTextAnswer() {
-            userAnswers[currentQuestionIndex].text = document.getElementById('answerInput').value.trim();
+        if (currentQuestionIndex < currentQuestions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestions[currentQuestionIndex].type === 'fraction') {
+            saveFractionAnswer();
+        } else {
+            saveTextAnswer();
         }
 
-        function saveFractionAnswer() {
-            userAnswers[currentQuestionIndex].numerator = document.getElementById('numeratorInput').value;
-            userAnswers[currentQuestionIndex].denominator = document.getElementById('denominatorInput').value;
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            showQuestion();
         }
+    }
 
-        function getUserAnswer(index) {
-            const question = currentQuestions[index];
-            const answer = userAnswers[index];
-            
-            if (question.type === 'fraction') {
-                if (answer.numerator && answer.denominator) {
-                    return `${answer.numerator}/${answer.denominator}`;
-                }
-                return '';
-            }
-            return answer.text;
+    function updateNavigationButtons() {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'block';
+
+        if (currentQuestionIndex === currentQuestions.length - 1) {
+            nextBtn.textContent = 'סיום';
+            nextBtn.className = 'nav-btn submit-btn';
+        } else {
+            nextBtn.textContent = 'הבא';
+            nextBtn.className = 'nav-btn next-btn';
         }
+    }
 
-        function nextQuestion() {
-            if (currentQuestions[currentQuestionIndex].type === 'fraction') {
-                saveFractionAnswer();
-            } else {
-                saveTextAnswer();
-            }
-            
-            if (currentQuestionIndex < currentQuestions.length - 1) {
-                currentQuestionIndex++;
-                showQuestion();
-            } else {
-                showResults();
-            }
-        }
+    function updateProgressBar() {
+        const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+    }
 
-        function prevQuestion() {
-            if (currentQuestions[currentQuestionIndex].type === 'fraction') {
-                saveFractionAnswer();
-            } else {
-                saveTextAnswer();
-            }
-            
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                showQuestion();
-            }
-        }
+    function normalizeAnswer(answer) {
+        return answer.replace(/\s+/g, '').toLowerCase();
+    }
 
-        function updateNavigationButtons() {
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'block';
-            
-            if (currentQuestionIndex === currentQuestions.length - 1) {
-                nextBtn.textContent = 'סיום';
-                nextBtn.className = 'nav-btn submit-btn';
-            } else {
-                nextBtn.textContent = 'הבא';
-                nextBtn.className = 'nav-btn next-btn';
-            }
-        }
+    function showResults() {
+        let correctCount = 0;
+        const reviewHtml = [];
 
-        function updateProgressBar() {
-            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
-        }
+        currentQuestions.forEach((question, index) => {
+            const userAnswer = getUserAnswer(index);
+            const userAns = normalizeAnswer(userAnswer);
+            const correctAns = normalizeAnswer(question.a);
+            const isCorrect = userAns === correctAns;
 
-        function normalizeAnswer(answer) {
-            return answer.replace(/\s+/g, '').toLowerCase();
-        }
+            if (isCorrect) correctCount++;
 
-        function showResults() {
-            let correctCount = 0;
-            const reviewHtml = [];
-
-            currentQuestions.forEach((question, index) => {
-                const userAnswer = getUserAnswer(index);
-                const userAns = normalizeAnswer(userAnswer);
-                const correctAns = normalizeAnswer(question.a);
-                const isCorrect = userAns === correctAns;
-                
-                if (isCorrect) correctCount++;
-
-                reviewHtml.push(`
+            reviewHtml.push(`
                     <div class="answer-review ${isCorrect ? 'correct-answer' : 'wrong-answer'}">
                         <strong>שאלה ${index + 1}:</strong> ${formatFraction(question.q)}<br>
                         ${question.fraction ? `<div style="margin:10px 0;">${formatFraction(question.fraction)}</div>` : ''}
@@ -633,40 +665,40 @@
                         <strong>${isCorrect ? '✓ נכון!' : '✗ לא נכון'}</strong>
                     </div>
                 `);
-            });
-
-            const incorrectCount = currentQuestions.length - correctCount;
-            const percentage = Math.round((correctCount / currentQuestions.length) * 100);
-
-            document.getElementById('quizScreen').style.display = 'none';
-            document.getElementById('resultsScreen').style.display = 'block';
-            
-            document.getElementById('scoreDisplay').textContent = percentage + '%';
-            document.getElementById('correctCount').textContent = correctCount;
-            document.getElementById('incorrectCount').textContent = incorrectCount;
-            document.getElementById('reviewAnswers').innerHTML = reviewHtml.join('');
-
-            let emoji = '';
-            if (percentage === 100) emoji = '🏆';
-            else if (percentage >= 80) emoji = '😊';
-            else if (percentage >= 60) emoji = '🙂';
-            else emoji = '💪';
-            
-            document.getElementById('resultEmoji').textContent = emoji;
-        }
-
-        function restartQuiz() {
-            document.getElementById('resultsScreen').style.display = 'none';
-            document.getElementById('startScreen').style.display = 'block';
-            currentQuestionIndex = 0;
-            userAnswers = [];
-        }
-
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && document.getElementById('quizScreen').style.display === 'block') {
-                nextQuestion();
-            }
         });
-    </script>
+
+        const incorrectCount = currentQuestions.length - correctCount;
+        const percentage = Math.round((correctCount / currentQuestions.length) * 100);
+
+        document.getElementById('quizScreen').style.display = 'none';
+        document.getElementById('resultsScreen').style.display = 'block';
+
+        document.getElementById('scoreDisplay').textContent = percentage + '%';
+        document.getElementById('correctCount').textContent = correctCount;
+        document.getElementById('incorrectCount').textContent = incorrectCount;
+        document.getElementById('reviewAnswers').innerHTML = reviewHtml.join('');
+
+        let emoji = '';
+        if (percentage === 100) emoji = '🏆';
+        else if (percentage >= 80) emoji = '😊';
+        else if (percentage >= 60) emoji = '🙂';
+        else emoji = '💪';
+
+        document.getElementById('resultEmoji').textContent = emoji;
+    }
+
+    function restartQuiz() {
+        document.getElementById('resultsScreen').style.display = 'none';
+        document.getElementById('startScreen').style.display = 'block';
+        currentQuestionIndex = 0;
+        userAnswers = [];
+    }
+
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && document.getElementById('quizScreen').style.display === 'block') {
+            nextQuestion();
+        }
+    });
+</script>
 </body>
 </html>
