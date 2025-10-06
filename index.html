@@ -513,18 +513,39 @@
         else if (question.type === 'shape' || question.type === 'shapes') {
             html += `<div class="question-text ${questionClass}">${formatFraction(question.q)}</div>`;
             if (question.shapes && Array.isArray(question.shapes)) {
-                html += `<div style="display:flex;justify-content:center;margin:20px 0;">
-                    <svg width="300" height="150">
-                        ${question.shapes.map((shape, idx) => {
-                            if (shape.type === 'circle') {
-                                return `<circle cx='${shape.cx || 50 + idx*80}' cy='${shape.cy || 75}' r='${shape.r || 30}' fill='${shape.color || '#667eea'}' />`;
-                            } else if (shape.type === 'rect') {
-                                return `<rect x='${shape.x || 20 + idx*80}' y='${shape.y || 40}' width='${shape.width || 60}' height='${shape.height || 60}' fill='${shape.color || '#f093fb'}' />`;
-                            }
-                            return '';
-                        }).join('')}
-                    </svg>
-                </div>`;
+                html += `<div style="display:flex;justify-content:center;gap:30px;margin:20px 0;">`;
+                question.shapes.forEach((shape, idx) => {
+                    if (shape.type === 'circle') {
+                        // Circle: support filled: 'half', 'third', etc.
+                        html += `<svg width='60' height='60' style='margin:0 10px;'>`;
+                        if (shape.filled === 'half') {
+                            // Draw half-filled circle (left side filled)
+                            html += `<defs><linearGradient id='half${shape.id}' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='50%' stop-color='#667eea'/><stop offset='50%' stop-color='white'/></linearGradient></defs>`;
+                            html += `<circle cx='30' cy='30' r='28' fill='url(#half${shape.id})' stroke='#333' stroke-width='2' />`;
+                        } else if (shape.filled === 'third') {
+                            // Draw third-filled circle (left third filled)
+                            html += `<defs><linearGradient id='third${shape.id}' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='33%' stop-color='#667eea'/><stop offset='33%' stop-color='white'/></linearGradient></defs>`;
+                            html += `<circle cx='30' cy='30' r='28' fill='url(#third${shape.id})' stroke='#333' stroke-width='2' />`;
+                        } else {
+                            // Full circle
+                            html += `<circle cx='30' cy='30' r='28' fill='#667eea' stroke='#333' stroke-width='2' />`;
+                        }
+                        html += `</svg>`;
+                    } else if (shape.type === 'rectangle') {
+                        // Rectangle: support parts/filled
+                        const parts = shape.parts || 1;
+                        const filled = shape.filled || 0;
+                        const width = 60, height = 60;
+                        html += `<svg width='${width}' height='${height}' style='margin:0 10px;'>`;
+                        for (let i = 0; i < parts; i++) {
+                            const partWidth = width / parts;
+                            html += `<rect x='${i * partWidth}' y='0' width='${partWidth - 2}' height='${height}' fill='${i < filled ? '#f093fb' : 'white'}' stroke='#333' stroke-width='2' />`;
+                        }
+                        html += `<rect x='0' y='0' width='${width}' height='${height}' fill='none' stroke='#333' stroke-width='2' />`;
+                        html += `</svg>`;
+                    }
+                });
+                html += `</div>`;
             }
             html += `<input type="text" class="answer-input" id="answerInput"
                            value="${userAnswers[currentQuestionIndex].text}"
