@@ -472,24 +472,64 @@
         let currentQuestionIndex = 0;
         let userAnswers = [];
 
-        // טעינת השאלות מקובץ חיצוני
+        // טעינת השאלות מקובץ חיצוני או שימוש בשאלות מוטמעות
         async function loadQuestions() {
             try {
                 const response = await fetch('questions.json');
-                if (!response.ok) {
-                    throw new Error('לא ניתן לטעון את קובץ השאלות');
+                if (response.ok) {
+                    questionBank = await response.json();
+                    console.log('השאלות נטענו מקובץ חיצוני!');
+                } else {
+                    throw new Error('לא נמצא קובץ חיצוני');
                 }
-                questionBank = await response.json();
-                console.log('השאלות נטענו בהצלחה!');
-                
-                // הצגת הכפתורים רק אחרי שהשאלות נטענו
-                document.querySelectorAll('.part-card').forEach(card => {
-                    card.classList.add('loaded');
-                });
             } catch (error) {
-                console.error('שגיאה בטעינת השאלות:', error);
-                alert('שגיאה בטעינת השאלות. וודא שקובץ questions.json נמצא באותה תיקייה.');
+                console.log('טוען שאלות מוטמעות...');
+                // שאלות מוטמעות - גיבוי למקרה שאין קובץ חיצוני
+                questionBank = {
+                    "fractions": [
+                        {q: "מה גדול יותר: 3/8 או 5/8? (כתבי את השבר הגדול)", a: "5/8", type: "text"},
+                        {q: "כתבי < או > או = : 3/8 ___ 5/8", a: "<", type: "text"},
+                        {q: "כתבי < או > או = : 2/7 ___ 2/9", a: ">", type: "text"},
+                        {q: "השלימו: 7/8 > ___/8", a: "6", type: "text"},
+                        {q: "השלימו: ___/5 < 4/5", a: "3", type: "text"},
+                        {q: "3/8 + 2/8 = ?", a: "5/8", type: "text"},
+                        {q: "7/10 - 3/10 = ?", a: "4/10", type: "text"},
+                        {q: "1 - 1/7 = ?", a: "6/7", type: "text"},
+                        {q: "4/11 + 6/11 = ?", a: "10/11", type: "text"},
+                        {q: "5/9 + 2/9 = ?", a: "7/9", type: "text"},
+                        {q: "8/12 - 3/12 = ?", a: "5/12", type: "text"},
+                        {q: "2/5 + 2/5 = ?", a: "4/5", type: "text"},
+                        {q: "3/4 × 4 = ?", a: "3", type: "text"},
+                        {q: "7 × 1/7 = ?", a: "1", type: "text"},
+                        {q: "2/5 × 5 = ?", a: "2", type: "text"},
+                        {q: "בעוגה יש 10 פרוסות. אניה אכלה 2 פרוסות. איזה חלק אכלה? (כתבי בצורת שבר)", a: "2/10", type: "text"},
+                        {q: "בכיתה יש 8 ילדים. 3 מהם בנים. איזה חלק מהכיתה הם בנים? (כתבי בצורת שבר)", a: "3/8", type: "text"}
+                    ],
+                    "operations": [
+                        {q: "48 × 10 = ?", a: "480", type: "text"},
+                        {q: "501 × 100 = ?", a: "50100", type: "text"},
+                        {q: "3,800 ÷ 10 = ?", a: "380", type: "text"},
+                        {q: "5,000 ÷ 100 = ?", a: "50", type: "text"},
+                        {q: "כתבי < או > או = : 200 × 10 ___ 200 × 5", a: ">", type: "text"},
+                        {q: "40 × 30 = ?", a: "1200", type: "text"},
+                        {q: "120 × 20 = ?", a: "2400", type: "text"},
+                        {q: "50 × 70 = ?", a: "3500", type: "text"},
+                        {q: "8 × 83 = ? (פרקי ל-80 + 3)", a: "664", type: "text"},
+                        {q: "203 × 5 = ?", a: "1015", type: "text"},
+                        {q: "344 × 2 = ?", a: "688", type: "text"},
+                        {q: "175 × 4 = ?", a: "700", type: "text"},
+                        {q: "6,000 ÷ 20 = ?", a: "300", type: "text"},
+                        {q: "3,000 ÷ 50 = ?", a: "60", type: "text"},
+                        {q: "בקופה היו 350 מטבעות של 10 שקלים. כמה כסף היה בקופה? (בשקלים)", a: "3500", type: "text"},
+                        {q: "יש 8 קבוצות של תלמידים. בכל קבוצה 35 תלמידים. כמה תלמידים בסך הכל?", a: "280", type: "text"}
+                    ]
+                };
             }
+            
+            // הצגת הכפתורים רק אחרי שהשאלות נטענו
+            document.querySelectorAll('.part-card').forEach(card => {
+                card.classList.add('loaded');
+            });
         }
 
         // טעינת השאלות בעת טעינת הדף
