@@ -461,8 +461,16 @@
 
     <script>
         function formatFraction(text) {
+            // המרת שברים עם סימני שאלה למבנה ויזואלי
+            text = text.replace(/\?\/(\d+)/g, '<span class="fraction"><span class="numerator">?</span><span class="denominator">$1</span></span>');
+            text = text.replace(/(\d+)\/\?/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">?</span></span>');
+            
+            // המרת מספרים מעורבים רגילים
             text = text.replace(/(\d+)\s+(\d+)\/(\d+)/g, '<span>$1 <span class="fraction"><span class="numerator">$2</span><span class="denominator">$3</span></span></span>');
+            
+            // המרת שברים רגילים
             text = text.replace(/(\d+)\/(\d+)/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">$2</span></span>');
+            
             return text;
         }
 
@@ -490,8 +498,11 @@
                         {q: "מה גדול יותר: 3/8 או 5/8? (כתבי את השבר הגדול)", a: "5/8", type: "text"},
                         {q: "כתבי < או > או = : 3/8 ___ 5/8", a: "<", type: "text"},
                         {q: "כתבי < או > או = : 2/7 ___ 2/9", a: ">", type: "text"},
-                        {q: "השלימו: 7/8 > ___/8", a: "6", type: "text"},
-                        {q: "השלימו: ___/5 < 4/5", a: "3", type: "text"},
+                        {q: "השלימו: 7/8 > ?/8", a: "6", type: "text"},
+                        {q: "השלימו: ?/5 < 4/5", a: "3", type: "text"},
+                        {q: "השלימו: 1/? = 9/18", a: "2", type: "text"},
+                        {q: "סדרו מהגדול לקטן (כתבי את סדר האותיות):<br>א. 2/7  ב. 4/7  ג. 7/7  ד. 9/7", a: "דגבא", type: "text"},
+                        {q: "סדרו מהקטן לגדול (כתבי את סדר האותיות):<br>א. 4/6  ב. 4/10  ג. 4/5  ד. 4/3", a: "באגד", type: "text"},
                         {q: "3/8 + 2/8 = ?", a: "5/8", type: "text"},
                         {q: "7/10 - 3/10 = ?", a: "4/10", type: "text"},
                         {q: "1 - 1/7 = ?", a: "6/7", type: "text"},
