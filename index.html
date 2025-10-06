@@ -59,6 +59,28 @@
             cursor: pointer;
         }
 
+        .settings {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .settings label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .settings input {
+            width: 80px;
+            padding: 8px;
+            font-size: 1em;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+
         .start-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -97,6 +119,7 @@
             font-size: 1.3em;
             margin-bottom: 20px;
             color: #333;
+            line-height: 1.6;
         }
 
         .answer-input {
@@ -254,19 +277,33 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎓 תרגול מתמטיקה לכיתה ה'</h1>
+        <h1>תרגול מתמטיקה לכיתה ה'</h1>
 
         <!-- Start Screen -->
         <div class="start-screen" id="startScreen">
             <div class="topic-select">
                 <label>בחרי נושא לתרגול:</label>
                 <select id="topicSelect">
-                    <option value="fractions">חלק א - שברים</option>
-                    <option value="operations">חלק ב - פעולות במספרים טבעיים</option>
-                    <option value="mixed">תרגול משולב (שניהם)</option>
+                    <option value="fractions">שברים - חיבור וחיסור</option>
+                    <option value="fractionMultiply">שברים - כפל שבר בשלם</option>
+                    <option value="fractionCompare">שברים - השוואה</option>
+                    <option value="fractionProblems">שברים - בעיות מילוליות</option>
+                    <option value="multiplication">כפל במספרים גדולים</option>
+                    <option value="division">חילוק במספרים גדולים</option>
+                    <option value="multiplyTens">כפל עשרות שלמות</option>
+                    <option value="wordProblems">בעיות מילוליות</option>
+                    <option value="allFractions">כל השברים</option>
+                    <option value="allOperations">כל הפעולות</option>
+                    <option value="mixed">תרגול משולב (הכל)</option>
                 </select>
             </div>
-            <button class="start-btn" onclick="startQuiz()">התחל מבחן! 🚀</button>
+            <div class="settings">
+                <label>
+                    מספר שאלות במבחן: 
+                    <input type="number" id="numQuestions" value="10" min="5" max="30">
+                </label>
+            </div>
+            <button class="start-btn" onclick="startQuiz()">התחל מבחן</button>
         </div>
 
         <!-- Quiz Screen -->
@@ -276,8 +313,8 @@
             </div>
             <div class="question-container" id="questionContainer"></div>
             <div class="navigation">
-                <button class="nav-btn prev-btn" onclick="prevQuestion()" id="prevBtn">← הקודם</button>
-                <button class="nav-btn next-btn" onclick="nextQuestion()" id="nextBtn">הבא →</button>
+                <button class="nav-btn prev-btn" onclick="prevQuestion()" id="prevBtn">הקודם</button>
+                <button class="nav-btn next-btn" onclick="nextQuestion()" id="nextBtn">הבא</button>
             </div>
         </div>
 
@@ -295,52 +332,183 @@
                 </div>
             </div>
             <div class="review-answers" id="reviewAnswers"></div>
-            <button class="start-btn" onclick="restartQuiz()">התחל מבחן חדש 🔄</button>
+            <button class="start-btn" onclick="restartQuiz()">התחל מבחן חדש</button>
         </div>
     </div>
 
     <script>
         // Function to convert text fractions to HTML display
         function formatFraction(text) {
-            // Handle mixed numbers like 2⅔ or 2 2/3
-            text = text.replace(/(\d+)\s*(\d+)\/(\d+)/g, '<span class="mixed-number">$1<span class="fraction"><span class="numerator">$2</span><span class="denominator">$3</span></span></span>');
+            // Handle mixed numbers like 2 2/3
+            text = text.replace(/(\d+)\s+(\d+)\/(\d+)/g, '<span class="mixed-number">$1<span class="fraction"><span class="numerator">$2</span><span class="denominator">$3</span></span></span>');
             
             // Handle simple fractions like 3/8
             text = text.replace(/(\d+)\/(\d+)/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">$2</span></span>');
             
-            // Handle special characters
-            text = text.replace(/⅔/g, '<span class="fraction"><span class="numerator">2</span><span class="denominator">3</span></span>');
-            text = text.replace(/¼/g, '<span class="fraction"><span class="numerator">1</span><span class="denominator">4</span></span>');
-            text = text.replace(/½/g, '<span class="fraction"><span class="numerator">1</span><span class="denominator">2</span></span>');
-            text = text.replace(/¾/g, '<span class="fraction"><span class="numerator">3</span><span class="denominator">4</span></span>');
-            
             return text;
         }
 
-        const questions = {
+        const questionBank = {
+            // חיבור וחיסור שברים
             fractions: [
                 {q: "3/8 + 2/8 = ?", a: "5/8"},
                 {q: "7/10 - 3/10 = ?", a: "4/10"},
                 {q: "1 - 1/7 = ?", a: "6/7"},
                 {q: "4/11 + 6/11 = ?", a: "10/11"},
+                {q: "5/9 + 2/9 = ?", a: "7/9"},
+                {q: "8/12 - 3/12 = ?", a: "5/12"},
+                {q: "2/5 + 2/5 = ?", a: "4/5"},
+                {q: "9/10 - 4/10 = ?", a: "5/10"},
+                {q: "1/6 + 4/6 = ?", a: "5/6"},
+                {q: "7/8 - 2/8 = ?", a: "5/8"},
+                {q: "3/7 + 3/7 = ?", a: "6/7"},
+                {q: "5/6 - 1/6 = ?", a: "4/6"},
+                {q: "2/9 + 5/9 = ?", a: "7/9"},
+                {q: "6/11 + 4/11 = ?", a: "10/11"},
+                {q: "8/9 - 3/9 = ?", a: "5/9"},
+                {q: "1 - 2/5 = ?", a: "3/5"},
+                {q: "1 - 3/8 = ?", a: "5/8"},
+                {q: "4/10 + 5/10 = ?", a: "9/10"},
+                {q: "7/12 - 2/12 = ?", a: "5/12"},
+                {q: "3/10 + 6/10 = ?", a: "9/10"}
+            ],
+
+            // כפל שבר בשלם
+            fractionMultiply: [
                 {q: "3/4 × 4 = ?", a: "3"},
                 {q: "7 × 1/7 = ?", a: "1"},
-                {q: "2 2/3 - 4/6 = ?", a: "2"},
-                {q: "3 1/4 - 2 = ?", a: "1 1/4"},
-                {q: "1/2 + 1/4 × 2 = ?", a: "1"},
-                {q: "בעוגה יש 10 פרוסות. אניה אכלה 2 פרוסות. איזה חלק אכלה? (כתבי בצורת שבר)", a: "2/10"}
+                {q: "2/5 × 5 = ?", a: "2"},
+                {q: "6 × 1/6 = ?", a: "1"},
+                {q: "1/8 × 8 = ?", a: "1"},
+                {q: "3/10 × 10 = ?", a: "3"},
+                {q: "4 × 2/4 = ?", a: "2"},
+                {q: "5 × 3/5 = ?", a: "3"},
+                {q: "1/3 × 6 = ?", a: "2"},
+                {q: "2/7 × 7 = ?", a: "2"},
+                {q: "8 × 1/8 = ?", a: "1"},
+                {q: "1/4 × 8 = ?", a: "2"},
+                {q: "3 × 2/3 = ?", a: "2"},
+                {q: "1/5 × 10 = ?", a: "2"},
+                {q: "6 × 2/6 = ?", a: "2"},
+                {q: "4/9 × 9 = ?", a: "4"},
+                {q: "1/2 × 10 = ?", a: "5"},
+                {q: "5/8 × 8 = ?", a: "5"},
+                {q: "9 × 1/9 = ?", a: "1"},
+                {q: "2/10 × 10 = ?", a: "2"}
             ],
-            operations: [
-                {q: "40 × 30 = ?", a: "1200"},
-                {q: "48 × 10 = ?", a: "480"},
-                {q: "6,000 ÷ 20 = ?", a: "300"},
-                {q: "120 × 20 = ?", a: "2400"},
-                {q: "3,000 ÷ 50 = ?", a: "60"},
-                {q: "200 × 50 = ? (השתמשי: 200 × 50 = 2 × 5000)", a: "10000"},
-                {q: "8 × 83 = ? (פרקי ל-80 + 3)", a: "664"},
+
+            // השוואת שברים
+            fractionCompare: [
+                {q: "מה גדול יותר: 3/8 או 5/8? (כתבי את השבר הגדול)", a: "5/8"},
+                {q: "מה גדול יותר: 2/7 או 5/7? (כתבי את השבר הגדול)", a: "5/7"},
+                {q: "מה קטן יותר: 1/4 או 3/4? (כתבי את השבר הקטן)", a: "1/4"},
+                {q: "מה גדול יותר: 4/10 או 7/10? (כתבי את השבר הגדול)", a: "7/10"},
+                {q: "מה גדול יותר: 5/6 או 2/6? (כתבי את השבר הגדול)", a: "5/6"},
+                {q: "מה קטן יותר: 3/9 או 7/9? (כתבי את השבר הקטן)", a: "3/9"},
+                {q: "מה גדול יותר: 6/11 או 4/11? (כתבי את השבר הגדול)", a: "6/11"},
+                {q: "מה גדול יותר: 1/2 או 1/4? (כתבי את השבר הגדול)", a: "1/2"},
+                {q: "מה קטן יותר: 1/3 או 1/6? (כתבי את השבר הקטן)", a: "1/6"},
+                {q: "מה גדול יותר: 1/5 או 1/10? (כתבי את השבר הגדול)", a: "1/5"}
+            ],
+
+            // בעיות מילוליות בשברים
+            fractionProblems: [
+                {q: "בעוגה יש 10 פרוסות. אניה אכלה 2 פרוסות. איזה חלק אכלה? (כתבי בצורת שבר)", a: "2/10"},
+                {q: "בכיתה יש 8 ילדים. 3 מהם בנים. איזה חלק מהכיתה הם בנים? (כתבי בצורת שבר)", a: "3/8"},
+                {q: "בסל יש 12 תפוחים. 5 מהם אדומים. איזה חלק אדום? (כתבי בצורת שבר)", a: "5/12"},
+                {q: "במבחן היו 20 שאלות. ענתי נכון על 15. איזה חלק ענתה נכון? (כתבי בצורת שבר)", a: "15/20"},
+                {q: "בצנצנת יש 7 סוכריות. אכלתי 2. איזה חלק אכלתי? (כתבי בצורת שבר)", a: "2/7"},
+                {q: "בגן יש 9 פרחים. 4 מהם צהובים. איזה חלק צהוב? (כתבי בצורת שבר)", a: "4/9"},
+                {q: "בקופסה יש 6 עפרונות. 2 מהם אדומים. איזה חלק אדום? (כתבי בצורת שבר)", a: "2/6"},
+                {q: "בספר יש 100 עמודים. קראתי 25. איזה חלק קראתי? (כתבי בצורת שבר)", a: "25/100"},
+                {q: "ביום יש 24 שעות. ישנתי 8 שעות. איזה חלק מהיום ישנתי? (כתבי בצורת שבר)", a: "8/24"},
+                {q: "בחנות יש 15 בובות. 6 מהן גדולות. איזה חלק גדול? (כתבי בצורת שבר)", a: "6/15"}
+            ],
+
+            // כפל במספרים גדולים
+            multiplication: [
+                {q: "8 × 83 = ?", a: "664"},
                 {q: "203 × 5 = ?", a: "1015"},
                 {q: "344 × 2 = ?", a: "688"},
-                {q: "בקופה היו 350 מטבעות של 10 שקלים. כמה כסף היה בקופה? (בשקלים)", a: "3500"}
+                {q: "8 × 39 = ?", a: "312"},
+                {q: "175 × 4 = ?", a: "700"},
+                {q: "199 × 3 = ?", a: "597"},
+                {q: "6 × 47 = ?", a: "282"},
+                {q: "125 × 8 = ?", a: "1000"},
+                {q: "9 × 56 = ?", a: "504"},
+                {q: "234 × 3 = ?", a: "702"},
+                {q: "7 × 68 = ?", a: "476"},
+                {q: "156 × 5 = ?", a: "780"},
+                {q: "4 × 89 = ?", a: "356"},
+                {q: "267 × 2 = ?", a: "534"},
+                {q: "6 × 95 = ?", a: "570"},
+                {q: "189 × 4 = ?", a: "756"},
+                {q: "5 × 73 = ?", a: "365"},
+                {q: "298 × 3 = ?", a: "894"},
+                {q: "7 × 84 = ?", a: "588"},
+                {q: "145 × 6 = ?", a: "870"}
+            ],
+
+            // חילוק במספרים גדולים
+            division: [
+                {q: "120 ÷ 60 = ?", a: "2"},
+                {q: "3,000 ÷ 50 = ?", a: "60"},
+                {q: "5,000 ÷ 100 = ?", a: "50"},
+                {q: "3,800 ÷ 10 = ?", a: "380"},
+                {q: "2,400 ÷ 60 = ?", a: "40"},
+                {q: "1,600 ÷ 40 = ?", a: "40"},
+                {q: "4,500 ÷ 90 = ?", a: "50"},
+                {q: "6,000 ÷ 120 = ?", a: "50"},
+                {q: "8,000 ÷ 200 = ?", a: "40"},
+                {q: "7,200 ÷ 80 = ?", a: "90"},
+                {q: "3,600 ÷ 90 = ?", a: "40"},
+                {q: "5,400 ÷ 60 = ?", a: "90"},
+                {q: "2,800 ÷ 70 = ?", a: "40"},
+                {q: "4,200 ÷ 70 = ?", a: "60"},
+                {q: "9,000 ÷ 100 = ?", a: "90"},
+                {q: "1,500 ÷ 30 = ?", a: "50"},
+                {q: "6,300 ÷ 90 = ?", a: "70"},
+                {q: "4,800 ÷ 80 = ?", a: "60"},
+                {q: "7,000 ÷ 100 = ?", a: "70"},
+                {q: "2,100 ÷ 30 = ?", a: "70"}
+            ],
+
+            // כפל עשרות שלמות
+            multiplyTens: [
+                {q: "40 × 30 = ?", a: "1200"},
+                {q: "48 × 10 = ?", a: "480"},
+                {q: "501 × 100 = ?", a: "50100"},
+                {q: "6,000 ÷ 20 = ?", a: "300"},
+                {q: "120 × 20 = ?", a: "2400"},
+                {q: "60 × 300 = ?", a: "18000"},
+                {q: "50 × 70 = ?", a: "3500"},
+                {q: "80 × 90 = ?", a: "7200"},
+                {q: "200 × 40 = ?", a: "8000"},
+                {q: "30 × 60 = ?", a: "1800"},
+                {q: "100 × 25 = ?", a: "2500"},
+                {q: "70 × 80 = ?", a: "5600"},
+                {q: "90 × 50 = ?", a: "4500"},
+                {q: "300 × 20 = ?", a: "6000"},
+                {q: "45 × 100 = ?", a: "4500"},
+                {q: "60 × 60 = ?", a: "3600"},
+                {q: "150 × 10 = ?", a: "1500"},
+                {q: "80 × 40 = ?", a: "3200"},
+                {q: "250 × 10 = ?", a: "2500"},
+                {q: "35 × 100 = ?", a: "3500"}
+            ],
+
+            // בעיות מילוליות
+            wordProblems: [
+                {q: "בקופה היו 350 מטבעות של 10 שקלים. כמה כסף היה בקופה? (בשקלים)", a: "3500"},
+                {q: "בחנות קנו 15 שמלות ב-100 שקלים כל אחת. כמה עלו כל השמלות? (בשקלים)", a: "1500"},
+                {q: "יש 8 קבוצות של תלמידים. בכל קבוצה 35 תלמידים. כמה תלמידים בסך הכל?", a: "280"},
+                {q: "לטיול יצאו 6 אוטובוסים עם 45 תלמידים בכל אוטובוס. כמה תלמידים יצאו לטיול?", a: "270"},
+                {q: "במפעל מייצרים 125 מוצרים בשעה. כמה מוצרים ייצרו ב-8 שעות?", a: "1000"},
+                {q: "בספריה יש 12 מדפים. בכל מדף 48 ספרים. כמה ספרים יש בספריה?", a: "576"},
+                {q: "בבית הספר יש 9 כיתות עם 32 תלמידים בכל כיתה. כמה תלמידים יש בבית הספר?", a: "288"},
+                {q: "חנות מכרה 25 חולצות ב-80 שקלים כל אחת. כמה כסף הרוויחה? (בשקלים)", a: "2000"},
+                {q: "בגן יש 7 שורות של פרחים. בכל שורה 24 פרחים. כמה פרחים יש בגן?", a: "168"},
+                {q: "בחווה יש 18 לולים עם 65 תרנגולות בכל לול. כמה תרנגולות יש בחווה?", a: "1170"}
             ]
         };
 
@@ -348,19 +516,46 @@
         let currentQuestionIndex = 0;
         let userAnswers = [];
         let selectedTopic = '';
+        let numQuestions = 10;
 
         function startQuiz() {
             selectedTopic = document.getElementById('topicSelect').value;
+            numQuestions = parseInt(document.getElementById('numQuestions').value);
             
-            if (selectedTopic === 'mixed') {
-                currentQuestions = [...questions.fractions, ...questions.operations];
+            let questionPool = [];
+            
+            if (selectedTopic === 'allFractions') {
+                questionPool = [
+                    ...questionBank.fractions,
+                    ...questionBank.fractionMultiply,
+                    ...questionBank.fractionCompare,
+                    ...questionBank.fractionProblems
+                ];
+            } else if (selectedTopic === 'allOperations') {
+                questionPool = [
+                    ...questionBank.multiplication,
+                    ...questionBank.division,
+                    ...questionBank.multiplyTens,
+                    ...questionBank.wordProblems
+                ];
+            } else if (selectedTopic === 'mixed') {
+                questionPool = [
+                    ...questionBank.fractions,
+                    ...questionBank.fractionMultiply,
+                    ...questionBank.fractionCompare,
+                    ...questionBank.fractionProblems,
+                    ...questionBank.multiplication,
+                    ...questionBank.division,
+                    ...questionBank.multiplyTens,
+                    ...questionBank.wordProblems
+                ];
             } else {
-                currentQuestions = [...questions[selectedTopic]];
+                questionPool = [...questionBank[selectedTopic]];
             }
 
-            // Shuffle questions
-            currentQuestions.sort(() => Math.random() - 0.5);
-            currentQuestions = currentQuestions.slice(0, 10); // Take 10 questions
+            // Shuffle and select questions
+            questionPool.sort(() => Math.random() - 0.5);
+            currentQuestions = questionPool.slice(0, Math.min(numQuestions, questionPool.length));
 
             userAnswers = new Array(currentQuestions.length).fill('');
             currentQuestionIndex = 0;
@@ -413,84 +608,4 @@
         }
 
         function updateNavigationButtons() {
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'block';
-            
-            if (currentQuestionIndex === currentQuestions.length - 1) {
-                nextBtn.textContent = 'סיום ✓';
-                nextBtn.className = 'nav-btn submit-btn';
-            } else {
-                nextBtn.textContent = 'הבא →';
-                nextBtn.className = 'nav-btn next-btn';
-            }
-        }
-
-        function updateProgressBar() {
-            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
-        }
-
-        function normalizeAnswer(answer) {
-            return answer.replace(/\s+/g, '').toLowerCase();
-        }
-
-        function showResults() {
-            let correctCount = 0;
-            const reviewHtml = [];
-
-            currentQuestions.forEach((question, index) => {
-                const userAnswer = normalizeAnswer(userAnswers[index]);
-                const correctAnswer = normalizeAnswer(question.a);
-                const isCorrect = userAnswer === correctAnswer;
-                
-                if (isCorrect) correctCount++;
-
-                reviewHtml.push(`
-                    <div class="answer-review ${isCorrect ? 'correct-answer' : 'wrong-answer'}">
-                        <strong>שאלה ${index + 1}:</strong> ${question.q}<br>
-                        <strong>התשובה שלך:</strong> ${userAnswers[index] || '(לא נענתה)'}<br>
-                        ${!isCorrect ? `<strong>תשובה נכונה:</strong> ${question.a}<br>` : ''}
-                        <strong>${isCorrect ? '✓ נכון!' : '✗ לא נכון'}</strong>
-                    </div>
-                `);
-            });
-
-            const incorrectCount = currentQuestions.length - correctCount;
-            const percentage = Math.round((correctCount / currentQuestions.length) * 100);
-
-            document.getElementById('quizScreen').style.display = 'none';
-            document.getElementById('resultsScreen').style.display = 'block';
-            
-            document.getElementById('scoreDisplay').textContent = percentage + '%';
-            document.getElementById('correctCount').textContent = correctCount;
-            document.getElementById('incorrectCount').textContent = incorrectCount;
-            document.getElementById('reviewAnswers').innerHTML = reviewHtml.join('');
-
-            // Set emoji based on score
-            let emoji = '🎉';
-            if (percentage === 100) emoji = '🏆';
-            else if (percentage >= 80) emoji = '😊';
-            else if (percentage >= 60) emoji = '🙂';
-            else emoji = '💪';
-            
-            document.getElementById('resultEmoji').textContent = emoji;
-        }
-
-        function restartQuiz() {
-            document.getElementById('resultsScreen').style.display = 'none';
-            document.getElementById('startScreen').style.display = 'block';
-            currentQuestionIndex = 0;
-            userAnswers = [];
-        }
-
-        // Allow Enter key to move to next question
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && document.getElementById('quizScreen').style.display === 'block') {
-                nextQuestion();
-            }
-        });
-    </script>
-</body>
-</html>
+            const prevBtn = document.getElementById('prevBtn
