@@ -67,33 +67,39 @@
     },
     {
       "q": "השלימו: 7/8 > ?/8",
-      "a": "6",
-      "type": "text"
+      "type": "completion-mc",
+      "options": ["5/8", "6/8", "7/8"],
+      "correctLetter": "ב"
     },
     {
       "q": "השלימו: ?/5 < 4/5",
-      "a": "3",
-      "type": "text"
+      "type": "completion-mc",
+      "options": ["2/5", "3/5", "4/5"],
+      "correctLetter": "ב"
     },
     {
       "q": "השלימו: 1/? = 9/18",
-      "a": "2",
-      "type": "text"
+      "type": "completion-mc",
+      "options": ["2", "9", "18"],
+      "correctLetter": "א"
     },
     {
       "q": "השלימו: 1/2 > ?/10",
-      "a": "4",
-      "type": "text"
+      "type": "completion-mc",
+      "options": ["4/10", "5/10", "6/10"],
+      "correctLetter": "ג"
     },
     {
       "q": "השלימו: ?/7 = 1",
-      "a": "7",
-      "type": "text"
+      "type": "completion-mc",
+      "options": ["1", "7", "14"],
+      "correctLetter": "ב"
     },
     {
       "q": "השלימו: 0 = ?/10",
-      "a": "0",
-      "type": "text"
+      "type": "completion-mc",
+      "options": ["0", "1", "10"],
+      "correctLetter": "א"
     },
     {
       "q": "סדרו מהגדול לקטן (כתבי את סדר האותיות):<br>א. 2/7  ב. 4/7  ג. 7/7  ד. 9/7",
