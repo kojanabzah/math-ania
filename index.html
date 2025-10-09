@@ -23,8 +23,806 @@
             margin: 0 auto;
             background: white;
             border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;<!DOCTYPE html>
+        <html dir="rtl" lang="he">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>מבחן מתמטיקה - כיתה ה'</title>
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            }
+
+            h1 {
+                color: #667eea;
+                text-align: center;
+                margin-bottom: 20px;
+                font-size: 2.2em;
+            }
+
+            .subtitle {
+                text-align: center;
+                color: #666;
+                margin-bottom: 40px;
+                font-size: 1.1em;
+            }
+
+            .start-screen {
+                text-align: center;
+            }
+
+            .part-select {
+                display: flex;
+                gap: 20px;
+                justify-content: center;
+                margin: 40px 0;
+                flex-wrap: wrap;
+            }
+
+            .part-card {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white;
+                padding: 30px;
+                border-radius: 15px;
+                cursor: pointer;
+                transition: transform 0.3s, box-shadow 0.3s;
+                width: 250px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                opacity: 0.5;
+                pointer-events: none;
+            }
+
+            .part-card.loaded {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .part-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            }
+
+            .part-card.operations {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            }
+
+            .part-card h2 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+
+            .part-card ul {
+                text-align: right;
+                list-style: none;
+                font-size: 0.95em;
+                line-height: 1.8;
+            }
+
+            .part-card ul li:before {
+                content: "✓ ";
+                margin-left: 5px;
+            }
+
+            .quiz-screen {
+                display: none;
+            }
+
+            .part-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+
+            .question-container {
+                background: #f8f9fa;
+                padding: 30px;
+                border-radius: 15px;
+                margin-bottom: 25px;
+                min-height: 300px;
+            }
+
+            .question-number {
+                color: #667eea;
+                font-weight: bold;
+                margin-bottom: 20px;
+                font-size: 1.2em;
+            }
+
+            .question-text {
+                font-size: 1.4em;
+                margin-bottom: 25px;
+                color: #333;
+                line-height: 1.8;
+                direction: rtl;
+                text-align: right;
+            }
+
+            .question-text.ltr {
+                direction: ltr;
+                text-align: center;
+            }
+
+            .fraction {
+                display: inline-flex;
+                flex-direction: column;
+                align-items: center;
+                vertical-align: middle;
+                margin: 0 3px;
+                font-size: 1em;
+            }
+
+            .numerator {
+                border-bottom: 2px solid #333;
+                padding: 0 8px 3px 8px;
+                min-width: 25px;
+                text-align: center;
+            }
+
+            .denominator {
+                padding: 3px 8px 0 8px;
+                min-width: 25px;
+                text-align: center;
+            }
+
+            .answer-input {
+                width: 100%;
+                max-width: 400px;
+                padding: 15px;
+                font-size: 1.3em;
+                border: 3px solid #ddd;
+                border-radius: 10px;
+                text-align: center;
+                display: block;
+                margin: 0 auto;
+            }
+
+            .fraction-input-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                margin: 20px 0;
+            }
+
+            .fraction-input-wrapper {
+                display: inline-flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .fraction-input {
+                width: 80px;
+                padding: 12px;
+                font-size: 1.3em;
+                border: 3px solid #ddd;
+                border-radius: 10px;
+                text-align: center;
+            }
+
+            .fraction-input:focus {
+                outline: none;
+                border-color: #667eea;
+            }
+
+            .fraction-line {
+                width: 80px;
+                height: 3px;
+                background: #333;
+                margin: 5px 0;
+            }
+
+            .input-label {
+                font-size: 0.9em;
+                color: #666;
+            }
+
+            .answer-input:focus {
+                outline: none;
+                border-color: #667eea;
+            }
+
+            .navigation {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 30px;
+                gap: 15px;
+            }
+
+            .nav-btn {
+                padding: 15px 35px;
+                font-size: 1.2em;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.3s;
+                font-weight: bold;
+            }
+
+            .prev-btn {
+                background: #6c757d;
+                color: white;
+            }
+
+            .next-btn {
+                background: #667eea;
+                color: white;
+                flex: 1;
+            }
+
+            .submit-btn {
+                background: #28a745;
+                color: white;
+            }
+
+            .nav-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            }
+
+            .results-screen {
+                display: none;
+                text-align: center;
+            }
+
+            .score-display {
+                font-size: 3.5em;
+                margin: 30px 0;
+                color: #667eea;
+                font-weight: bold;
+            }
+
+            .score-details {
+                background: #f8f9fa;
+                padding: 30px;
+                border-radius: 15px;
+                margin: 25px 0;
+            }
+
+            .score-item {
+                font-size: 1.4em;
+                margin: 20px 0;
+                padding: 10px;
+            }
+
+            .correct {
+                color: #28a745;
+                font-weight: bold;
+            }
+
+            .incorrect {
+                color: #dc3545;
+                font-weight: bold;
+            }
+
+            .review-answers {
+                margin-top: 40px;
+                text-align: right;
+            }
+
+            .answer-review {
+                background: #f8f9fa;
+                padding: 25px;
+                border-radius: 10px;
+                margin: 20px 0;
+            }
+
+            .answer-review.correct-answer {
+                border-right: 6px solid #28a745;
+            }
+
+            .answer-review.wrong-answer {
+                border-right: 6px solid #dc3545;
+            }
+
+            .progress-bar {
+                width: 100%;
+                height: 12px;
+                background: #e9ecef;
+                border-radius: 6px;
+                margin-bottom: 25px;
+                overflow: hidden;
+            }
+
+            .progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+                transition: width 0.3s;
+            }
+
+            .emoji {
+                font-size: 5em;
+                margin: 25px 0;
+            }
+
+            .start-btn {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 18px 50px;
+                font-size: 1.4em;
+                border-radius: 50px;
+                cursor: pointer;
+                margin-top: 30px;
+                transition: transform 0.2s;
+                font-weight: bold;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            }
+
+            .start-btn:hover {
+                transform: scale(1.05);
+            }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>מבחן מתמטיקה - כיתה ה'</h1>
+    <div class="subtitle">תרגול למבחן מספר 1</div>
+
+    <div class="start-screen" id="startScreen">
+        <div class="part-select">
+            <div class="part-card" onclick="startPart('fractions')">
+                <h2>חלק א' - שברים</h2>
+                <ul>
+                    <li>השוואת שברים</li>
+                    <li>חיבור וחיסור שברים</li>
+                    <li>כפל שבר בשלם</li>
+                    <li>בעיות מילוליות</li>
+                </ul>
+            </div>
+
+            <div class="part-card operations" onclick="startPart('operations')">
+                <h2>חלק ב' - פעולות</h2>
+                <ul>
+                    <li>הגדלה והקטנה ×10/100/1000</li>
+                    <li>כפל עשרות שלמות</li>
+                    <li>כפל בחד ספרתי</li>
+                    <li>בעיות מילוליות</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="quiz-screen" id="quizScreen">
+        <div class="part-header" id="partHeader"></div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        <div class="question-container" id="questionContainer"></div>
+        <div class="navigation">
+            <button class="nav-btn prev-btn" onclick="prevQuestion()" id="prevBtn">הקודם</button>
+            <button class="nav-btn next-btn" onclick="nextQuestion()" id="nextBtn">הבא</button>
+        </div>
+    </div>
+
+    <div class="results-screen" id="resultsScreen">
+        <div class="emoji" id="resultEmoji"></div>
+        <h2>סיימת את המבחן!</h2>
+        <div class="score-display" id="scoreDisplay"></div>
+        <div class="score-details">
+            <div class="score-item">
+                תשובות נכונות: <span class="correct" id="correctCount"></span>
+            </div>
+            <div class="score-item">
+                תשובות שגויות: <span class="incorrect" id="incorrectCount"></span>
+            </div>
+        </div>
+        <div class="review-answers" id="reviewAnswers"></div>
+        <button class="start-btn" onclick="restartQuiz()">חזרה לבחירת חלק</button>
+    </div>
+</div>
+
+<script src="questions.json" type="application/json"></script>
+<script>
+    function formatFraction(text) {
+        text = text.replace(/\?\/(\d+)/g, '<span class="fraction"><span class="numerator">?</span><span class="denominator">$1</span></span>');
+        text = text.replace(/(\d+)\/\?/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">?</span></span>');
+        text = text.replace(/(\d+)\s+(\d+)\/(\d+)/g, '<span>$1 <span class="fraction"><span class="numerator">$2</span><span class="denominator">$3</span></span></span>');
+        text = text.replace(/(\d+)\/(\d+)/g, '<span class="fraction"><span class="numerator">$1</span><span class="denominator">$2</span></span>');
+        return text;
+    }
+
+    let questionBank = {};
+    let currentPart = '';
+    let currentQuestions = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+
+    function toggleShapeSelection(qIdx, shapeId) {
+        if (!Array.isArray(userAnswers[qIdx].selectedIds)) userAnswers[qIdx].selectedIds = [];
+        const arr = userAnswers[qIdx].selectedIds;
+        const i = arr.indexOf(shapeId);
+        if (i === -1) arr.push(shapeId);
+        else arr.splice(i, 1);
+        showQuestion();
+    }
+
+    async function loadQuestions() {
+        try {
+            const response = await fetch('questions.json');
+            if (response.ok) {
+                questionBank = await response.json();
+                console.log('השאלות נטענו מקובץ חיצוני!');
+            } else {
+                throw new Error('לא נמצא קובץ חיצוני');
+            }
+        } catch (error) {
+            console.log('טוען שאלות מוטמעות...');
+            questionBank = {
+                "fractions": [
+                    {q: "מה גדול יותר? (כתבי את השבר הגדול)", options: ["3/8", "5/8"], a: "5/8", type: "text"},
+                    {q: "כתבי < או > או = : 3/8 ___ 5/8", a: "<", type: "text"},
+                    {q: "השלימו: 7/8 > ?/8", a: "6", type: "text"},
+                    {q: "כמה זה:", fraction: "3/8 + 2/8", a: "5/8", type: "fraction"},
+                    {q: "כמה זה:", fraction: "7/10 - 3/10", a: "4/10", type: "fraction"},
+                    {q: "3/4 × 4 = ?", a: "3", type: "text"},
+                    {q: "בעוגה יש 10 פרוסות. אניה אכלה 2 פרוסות. איזה חלק אכלה?", a: "2/10", type: "fraction"}
+                ],
+                "operations": [
+                    {q: "48 × 10 = ?", a: "480", type: "text"},
+                    {q: "501 × 100 = ?", a: "50100", type: "text"},
+                    {q: "כתבי < או > או = : 200 × 10 ___ 200 × 5", a: ">", type: "text"},
+                    {q: "40 × 30 = ?", a: "1200", type: "text"},
+                    {q: "8 × 83 = ? (פרקי ל-80 + 3)", a: "664", type: "text"},
+                    {q: "בקופה היו 350 מטבעות של 10 שקלים. כמה כסף היה בקופה? (בשקלים)", a: "3500", type: "text"}
+                ]
+            };
+        }
+
+        document.querySelectorAll('.part-card').forEach(card => {
+            card.classList.add('loaded');
+        });
+    }
+
+    window.addEventListener('load', loadQuestions);
+
+    function startPart(part) {
+        if (!questionBank || !questionBank[part]) {
+            alert('אנא המתן, השאלות עדיין נטענות...');
+            return;
+        }
+
+        currentPart = part;
+        currentQuestions = [...questionBank[part]];
+        currentQuestions.sort(() => Math.random() - 0.5);
+        currentQuestions = currentQuestions.slice(0, 15);
+
+        userAnswers = currentQuestions.map(() => ({numerator: '', denominator: '', text: ''}));
+        currentQuestionIndex = 0;
+
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display = 'block';
+
+        const partName = part === 'fractions' ? 'חלק א\' - שברים' : 'חלק ב\' - פעולות במספרים טבעיים';
+        document.getElementById('partHeader').innerHTML = `<h2>${partName}</h2>`;
+
+        showQuestion();
+    }
+
+    function addLineBreakBeforeNumbers(text) {
+        // לא מוסיפים <br> אם יש ביטוי מתמטי
+        if (/([\d]+\s*[\+\-\×\÷\/\*]\s*[\d]+)/.test(text)) {
+            return text;
+        }
+        // אם הטקסט הוא רק מספר, לא מוסיפים <br>
+        if (/^\d+$/.test(text.trim())) {
+            return text;
+        }
+        // מוסיף <br> לפני מספרים שמופיעים אחרי טקסט עברי רגיל בלבד
+        return text.replace(/([א-ת"׳.,;!?\s]+)(\d+)/g, function(match, heb, num) {
+            // אם יש טקסט עברי לפני המספר, מוסיפים <br>
+            return heb + '<br>' + num;
+        });
+    }
+
+    function showQuestion() {
+        const question = currentQuestions[currentQuestionIndex];
+        const container = document.getElementById('questionContainer');
+        const isMathExercise = /[\d\+\-\×\÷\=\<\>]/.test(question.q) && question.q.length < 80;
+        const questionClass = isMathExercise ? 'ltr' : '';
+        let html = `
+                <div class="question-number">שאלה ${currentQuestionIndex + 1} מתוך ${currentQuestions.length}</div>
+            `;
+        // שאלות השלמה עם אפשרויות
+        if (question.type === 'completion-mc' && Array.isArray(question.options)) {
+            html += `<div class="question-text ${questionClass}">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>`;
+            const letters = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח'];
+            html += `<div style="display:flex;gap:20px;justify-content:center;margin:20px 0;">`;
+            question.options.forEach((opt, idx) => {
+                const letter = letters[idx];
+                const selected = userAnswers[currentQuestionIndex].text === letter;
+                html += `<button type="button" class="answer-input" style="max-width:120px;cursor:pointer;${selected ? 'border:2px solid #28a745;' : ''}" onclick="userAnswers[${currentQuestionIndex}].text='${letter}';showQuestion();">${letter}) ${formatFraction(opt)}</button>`;
+            });
+            html += `</div>`;
+        }
+        // הצגת אפשרויות בפורמט שבר ויזואלי
+        else if (question.options && Array.isArray(question.options)) {
+            html += `<div class="question-text ${questionClass}">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>`;
+            html += `<div style="display:flex;gap:20px;justify-content:center;margin:20px 0;">`;
+            question.options.forEach((opt, idx) => {
+                html += `<button type="button" class="answer-input" style="max-width:120px;cursor:pointer;" onclick="userAnswers[currentQuestionIndex].text='${opt}';document.getElementById('answerInput').value='${opt}';">${formatFraction(opt)}</button>`;
+            });
+            html += `</div>`;
+            html += `<input type="text" class="answer-input" id="answerInput"
+                           value="${userAnswers[currentQuestionIndex].text}"
+                           placeholder="הכניסי את התשובה כאן">`;
+        }
+        else if (question.type === 'shape' || question.type === 'shapes') {
+            let questionTextHtml = '';
+            if (question.q && /\d+\/\d+/.test(question.q)) {
+                const match = question.q.match(/(.*?)(\d+\/\d+)(.*)/);
+                if (match) {
+                    questionTextHtml = `<div class="question-text" style="direction:rtl;text-align:right;display:flex;align-items:center;gap:8px;justify-content:flex-end;">
+                        <span>${addLineBreakBeforeNumbers(match[1].trim())}</span>
+                        <span>${formatFraction(match[2])}</span>
+                        <span>${addLineBreakBeforeNumbers(match[3].trim())}</span>
+                    </div>`;
+                } else {
+                    questionTextHtml = `<div class="question-text" style="direction:rtl;text-align:right;">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>`;
+                }
+            } else {
+                questionTextHtml = `<div class="question-text" style="direction:rtl;text-align:right;">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>`;
+            }
+            html += questionTextHtml;
+            if (question.shapes && Array.isArray(question.shapes)) {
+                html += `<div style="display:flex;justify-content:center;gap:30px;margin:20px 0;">`;
+                question.shapes.forEach((shape, idx) => {
+                    let selected = Array.isArray(userAnswers[currentQuestionIndex].selectedIds) && userAnswers[currentQuestionIndex].selectedIds.includes(shape.id);
+                    let border = selected ? '4px solid #28a745' : '2px solid #333';
+                    html += `<div style='cursor:pointer;border:${border};border-radius:12px;padding:2px;' onclick='toggleShapeSelection(${currentQuestionIndex}, "${shape.id}")'>`;
+                    if (shape.type === 'circle') {
+                        html += `<svg width='60' height='60' style='margin:0 10px;'>`;
+                        if (shape.filled === 'half') {
+                            html += `<defs><linearGradient id='half${shape.id}' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='50%' stop-color='#667eea'/><stop offset='50%' stop-color='white'/></linearGradient></defs>`;
+                            html += `<circle cx='30' cy='30' r='28' fill='url(#half${shape.id})' stroke='#333' stroke-width='2' />`;
+                        } else if (shape.filled === 'third') {
+                            html += `<defs><linearGradient id='third${shape.id}' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='33%' stop-color='#667eea'/><stop offset='33%' stop-color='white'/></linearGradient></defs>`;
+                            html += `<circle cx='30' cy='30' r='28' fill='url(#third${shape.id})' stroke='#333' stroke-width='2' />`;
+                        } else {
+                            html += `<circle cx='30' cy='30' r='28' fill='#667eea' stroke='#333' stroke-width='2' />`;
+                        }
+                        html += `</svg>`;
+                    } else if (shape.type === 'rectangle') {
+                        const parts = shape.parts || 1;
+                        const filled = shape.filled || 0;
+                        const width = 60, height = 60;
+                        html += `<svg width='${width}' height='${height}' style='margin:0 10px;'>`;
+                        for (let i = 0; i < parts; i++) {
+                            const partWidth = width / parts;
+                            html += `<rect x='${i * partWidth}' y='0' width='${partWidth - 2}' height='${height}' fill='${i < filled ? '#f093fb' : 'white'}' stroke='#333' stroke-width='2' />`;
+                        }
+                        html += `<rect x='0' y='0' width='${width}' height='${height}' fill='none' stroke='#333' stroke-width='2' />`;
+                        html += `</svg>`;
+                    }
+                    html += `</div>`;
+                });
+                html += `</div>`;
+            }
+            // לא צריך שדה תשובה טקסטואלי
+        } else if (question.type === 'fraction') {
+            html += `
+                    <div class="question-text">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>
+                    ${question.fraction ? `<div class="question-text ltr" style="font-size:1.8em; margin:20px 0;">${formatFraction(addLineBreakBeforeNumbers(question.fraction))}</div>` : ''}
+                    <div class="fraction-input-container" style="flex-direction: row; gap: 10px; justify-content: center; align-items: center; direction: rtl;">
+                        <div class="fraction-input-wrapper">
+                            <input type="number" class="fraction-input" id="numeratorInput"
+                                   value="${userAnswers[currentQuestionIndex].numerator}"
+                                   placeholder="מונה" min="0">
+                            <div class="fraction-line"></div>
+                            <input type="number" class="fraction-input" id="denominatorInput"
+                                   value="${userAnswers[currentQuestionIndex].denominator}"
+                                   placeholder="מכנה" min="1">
+                        </div>
+                        <input type="number" class="fraction-input" id="wholeInput"
+                               value="${userAnswers[currentQuestionIndex].whole || ''}"
+                               placeholder="שלם" min="0" style="width:80px;">
+                    </div>
+                `;
+        } else {
+            html += `
+                    <div class="question-text ${questionClass}">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>
+                    <input type="text" class="answer-input" id="answerInput"
+                           value="${userAnswers[currentQuestionIndex].text}"
+                           placeholder="הכניסי את התשובה כאן">
+                `;
+        }
+
+        container.innerHTML = html;
+
+        if (question.type === 'fraction') {
+            document.getElementById('wholeInput').addEventListener('input', saveFractionAnswer);
+            document.getElementById('numeratorInput').addEventListener('input', saveFractionAnswer);
+            document.getElementById('denominatorInput').addEventListener('input', saveFractionAnswer);
+            document.getElementById('wholeInput').focus();
+        } else if (question.type !== 'shape' && question.type !== 'shapes') {
+            document.getElementById('answerInput').focus();
+            document.getElementById('answerInput').addEventListener('input', saveTextAnswer);
+        }
+        updateProgressBar();
+        updateNavigationButtons();
+    }
+
+    function saveFractionAnswer() {
+        userAnswers[currentQuestionIndex].whole = document.getElementById('wholeInput').value;
+        userAnswers[currentQuestionIndex].numerator = document.getElementById('numeratorInput').value;
+        userAnswers[currentQuestionIndex].denominator = document.getElementById('denominatorInput').value;
+    }
+
+    function saveTextAnswer() {
+        const input = document.getElementById('answerInput');
+        if (input) {
+            userAnswers[currentQuestionIndex].text = input.value;
+        }
+    }
+
+    function getUserAnswer(index) {
+        const question = currentQuestions[index];
+        const answer = userAnswers[index];
+        if (question.type === 'fraction') {
+            let whole = answer.whole && answer.whole !== '0' ? answer.whole : '';
+            let frac = (answer.numerator && answer.denominator) ? `${answer.numerator}/${answer.denominator}` : '';
+            return (whole && frac) ? `${whole} ${frac}` : (frac || whole || '');
+        }
+        if (question.type === 'shape' || question.type === 'shapes') {
+            return Array.isArray(answer.selectedIds) ? answer.selectedIds.slice().sort().join(',') : '';
+        }
+        return answer.text;
+    }
+
+    function nextQuestion() {
+        if (currentQuestions[currentQuestionIndex].type === 'fraction') {
+            saveFractionAnswer();
+        } else {
+            saveTextAnswer();
+        }
+
+        if (currentQuestionIndex < currentQuestions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestions[currentQuestionIndex].type === 'fraction') {
+            saveFractionAnswer();
+        } else {
+            saveTextAnswer();
+        }
+
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            showQuestion();
+        }
+    }
+
+    function updateNavigationButtons() {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'block';
+
+        if (currentQuestionIndex === currentQuestions.length - 1) {
+            nextBtn.textContent = 'סיום';
+            nextBtn.className = 'nav-btn submit-btn';
+        } else {
+            nextBtn.textContent = 'הבא';
+            nextBtn.className = 'nav-btn next-btn';
+        }
+    }
+
+    function updateProgressBar() {
+        const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+    }
+
+    function normalizeAnswer(answer) {
+        return answer.replace(/\s+/g, '').toLowerCase();
+    }
+
+    function showResults() {
+        let correctCount = 0;
+        const reviewHtml = [];
+        currentQuestions.forEach((question, index) => {
+            const answer = userAnswers[index];
+            let isCorrect = false;
+            let userAnswerDisplay = '';
+            let correctAnswerDisplay = '';
+            if (question.type === 'completion-mc') {
+                isCorrect = answer.text === question.correctLetter;
+                userAnswerDisplay = answer.text || '(לא נבחרה אפשרות)';
+                correctAnswerDisplay = question.correctLetter;
+            } else if (question.type === 'shape' || question.type === 'shapes') {
+                const userIds = Array.isArray(answer.selectedIds) ? answer.selectedIds.slice().sort() : [];
+                const correctIds = Array.isArray(question.correctIds) ? question.correctIds.slice().sort() : [];
+                isCorrect = JSON.stringify(userIds) === JSON.stringify(correctIds);
+                userAnswerDisplay = userIds.length ? userIds.join(', ') : '(לא נבחרו צורות)';
+                correctAnswerDisplay = correctIds.join(', ');
+            } else if (question.type === 'fraction') {
+                const userAns = normalizeAnswer(getUserAnswer(index));
+                const correctAns = normalizeAnswer(question.a);
+                isCorrect = userAns === correctAns;
+                userAnswerDisplay = formatFraction(getUserAnswer(index) || '(לא נענתה)');
+                correctAnswerDisplay = formatFraction(question.a);
+            } else {
+                const userAns = normalizeAnswer(getUserAnswer(index));
+                const correctAns = normalizeAnswer(question.a);
+                isCorrect = userAns === correctAns;
+                userAnswerDisplay = formatFraction(getUserAnswer(index) || '(לא נענתה)');
+                correctAnswerDisplay = formatFraction(question.a);
+            }
+            if (isCorrect) correctCount++;
+            reviewHtml.push(`
+                <div class="answer-review ${isCorrect ? 'correct-answer' : 'wrong-answer'}">
+                    <strong>שאלה ${index + 1}:</strong> ${formatFraction(question.q)}<br>
+                    ${question.fraction ? `<div style="margin:10px 0;">${formatFraction(question.fraction)}</div>` : ''}
+                    <strong>התשובה שלך:</strong> ${userAnswerDisplay}<br>
+                    ${!isCorrect ? `<strong>תשובה נכונה:</strong> ${correctAnswerDisplay}<br>` : ''}
+                    <strong>${isCorrect ? '✓ נכון!' : '✗ לא נכון'}</strong>
+                </div>
+            `);
+        });
+
+        const incorrectCount = currentQuestions.length - correctCount;
+        const percentage = Math.round((correctCount / currentQuestions.length) * 100);
+
+        document.getElementById('quizScreen').style.display = 'none';
+        document.getElementById('resultsScreen').style.display = 'block';
+
+        document.getElementById('scoreDisplay').textContent = percentage + '%';
+        document.getElementById('correctCount').textContent = correctCount;
+        document.getElementById('incorrectCount').textContent = incorrectCount;
+        document.getElementById('reviewAnswers').innerHTML = reviewHtml.join('');
+
+        let emoji = '';
+        if (percentage === 100) emoji = '🏆';
+        else if (percentage >= 80) emoji = '😊';
+        else if (percentage >= 60) emoji = '🙂';
+        else emoji = '💪';
+
+        document.getElementById('resultEmoji').textContent = emoji;
+    }
+
+    function restartQuiz() {
+        document.getElementById('resultsScreen').style.display = 'none';
+        document.getElementById('startScreen').style.display = 'block';
+        currentQuestionIndex = 0;
+        userAnswers = [];
+    }
+
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && document.getElementById('quizScreen').style.display === 'block') {
+            nextQuestion();
+        }
+    });
+</script>
+</body>
+</html>
+
+box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         h1 {
@@ -425,6 +1223,15 @@
     let currentQuestionIndex = 0;
     let userAnswers = [];
 
+    function toggleShapeSelection(qIdx, shapeId) {
+        if (!Array.isArray(userAnswers[qIdx].selectedIds)) userAnswers[qIdx].selectedIds = [];
+        const arr = userAnswers[qIdx].selectedIds;
+        const i = arr.indexOf(shapeId);
+        if (i === -1) arr.push(shapeId);
+        else arr.splice(i, 1);
+        showQuestion();
+    }
+
     async function loadQuestions() {
         try {
             const response = await fetch('questions.json');
@@ -487,20 +1294,45 @@
         showQuestion();
     }
 
+    function addLineBreakBeforeNumbers(text) {
+        // לא מוסיפים <br> אם יש ביטוי מתמטי
+        if (/([\d]+\s*[\+\-\×\÷\/\*]\s*[\d]+)/.test(text)) {
+            return text;
+        }
+        // אם הטקסט הוא רק מספר, לא מוסיפים <br>
+        if (/^\d+$/.test(text.trim())) {
+            return text;
+        }
+        // מוסיף <br> לפני מספרים שמופיעים אחרי טקסט עברי רגיל בלבד
+        return text.replace(/([א-ת"׳.,;!?\s]+)(\d+)/g, function(match, heb, num) {
+            // אם יש טקסט עברי לפני המספר, מוסיפים <br>
+            return heb + '<br>' + num;
+        });
+    }
+
     function showQuestion() {
         const question = currentQuestions[currentQuestionIndex];
         const container = document.getElementById('questionContainer');
-
         const isMathExercise = /[\d\+\-\×\÷\=\<\>]/.test(question.q) && question.q.length < 80;
         const questionClass = isMathExercise ? 'ltr' : '';
-
         let html = `
                 <div class="question-number">שאלה ${currentQuestionIndex + 1} מתוך ${currentQuestions.length}</div>
             `;
-
+        // שאלות השלמה עם אפשרויות
+        if (question.type === 'completion-mc' && Array.isArray(question.options)) {
+            html += `<div class="question-text ${questionClass}">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>`;
+            const letters = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח'];
+            html += `<div style="display:flex;gap:20px;justify-content:center;margin:20px 0;">`;
+            question.options.forEach((opt, idx) => {
+                const letter = letters[idx];
+                const selected = userAnswers[currentQuestionIndex].text === letter;
+                html += `<button type="button" class="answer-input" style="max-width:120px;cursor:pointer;${selected ? 'border:2px solid #28a745;' : ''}" onclick="userAnswers[${currentQuestionIndex}].text='${letter}';showQuestion();">${letter}) ${formatFraction(opt)}</button>`;
+            });
+            html += `</div>`;
+        }
         // הצגת אפשרויות בפורמט שבר ויזואלי
-        if (question.options && Array.isArray(question.options)) {
-            html += `<div class="question-text ${questionClass}">${formatFraction(question.q)}</div>`;
+        else if (question.options && Array.isArray(question.options)) {
+            html += `<div class="question-text ${questionClass}">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>`;
             html += `<div style="display:flex;gap:20px;justify-content:center;margin:20px 0;">`;
             question.options.forEach((opt, idx) => {
                 html += `<button type="button" class="answer-input" style="max-width:120px;cursor:pointer;" onclick="userAnswers[currentQuestionIndex].text='${opt}';document.getElementById('answerInput').value='${opt}';">${formatFraction(opt)}</button>`;
@@ -511,28 +1343,41 @@
                            placeholder="הכניסי את התשובה כאן">`;
         }
         else if (question.type === 'shape' || question.type === 'shapes') {
-            html += `<div class="question-text ${questionClass}">${formatFraction(question.q)}</div>`;
+            let questionTextHtml = '';
+            if (question.q && /\d+\/\d+/.test(question.q)) {
+                const match = question.q.match(/(.*?)(\d+\/\d+)(.*)/);
+                if (match) {
+                    questionTextHtml = `<div class="question-text" style="direction:rtl;text-align:right;display:flex;align-items:center;gap:8px;justify-content:flex-end;">
+                        <span>${addLineBreakBeforeNumbers(match[1].trim())}</span>
+                        <span>${formatFraction(match[2])}</span>
+                        <span>${addLineBreakBeforeNumbers(match[3].trim())}</span>
+                    </div>`;
+                } else {
+                    questionTextHtml = `<div class="question-text" style="direction:rtl;text-align:right;">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>`;
+                }
+            } else {
+                questionTextHtml = `<div class="question-text" style="direction:rtl;text-align:right;">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>`;
+            }
+            html += questionTextHtml;
             if (question.shapes && Array.isArray(question.shapes)) {
                 html += `<div style="display:flex;justify-content:center;gap:30px;margin:20px 0;">`;
                 question.shapes.forEach((shape, idx) => {
+                    let selected = Array.isArray(userAnswers[currentQuestionIndex].selectedIds) && userAnswers[currentQuestionIndex].selectedIds.includes(shape.id);
+                    let border = selected ? '4px solid #28a745' : '2px solid #333';
+                    html += `<div style='cursor:pointer;border:${border};border-radius:12px;padding:2px;' onclick='toggleShapeSelection(${currentQuestionIndex}, "${shape.id}")'>`;
                     if (shape.type === 'circle') {
-                        // Circle: support filled: 'half', 'third', etc.
                         html += `<svg width='60' height='60' style='margin:0 10px;'>`;
                         if (shape.filled === 'half') {
-                            // Draw half-filled circle (left side filled)
                             html += `<defs><linearGradient id='half${shape.id}' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='50%' stop-color='#667eea'/><stop offset='50%' stop-color='white'/></linearGradient></defs>`;
                             html += `<circle cx='30' cy='30' r='28' fill='url(#half${shape.id})' stroke='#333' stroke-width='2' />`;
                         } else if (shape.filled === 'third') {
-                            // Draw third-filled circle (left third filled)
                             html += `<defs><linearGradient id='third${shape.id}' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='33%' stop-color='#667eea'/><stop offset='33%' stop-color='white'/></linearGradient></defs>`;
                             html += `<circle cx='30' cy='30' r='28' fill='url(#third${shape.id})' stroke='#333' stroke-width='2' />`;
                         } else {
-                            // Full circle
                             html += `<circle cx='30' cy='30' r='28' fill='#667eea' stroke='#333' stroke-width='2' />`;
                         }
                         html += `</svg>`;
                     } else if (shape.type === 'rectangle') {
-                        // Rectangle: support parts/filled
                         const parts = shape.parts || 1;
                         const filled = shape.filled || 0;
                         const width = 60, height = 60;
@@ -544,18 +1389,16 @@
                         html += `<rect x='0' y='0' width='${width}' height='${height}' fill='none' stroke='#333' stroke-width='2' />`;
                         html += `</svg>`;
                     }
+                    html += `</div>`;
                 });
                 html += `</div>`;
             }
-            html += `<input type="text" class="answer-input" id="answerInput"
-                           value="${userAnswers[currentQuestionIndex].text}"
-                           placeholder="הכניסי את התשובה כאן">
-                `;
+            // לא צריך שדה תשובה טקסטואלי
         } else if (question.type === 'fraction') {
             html += `
-                    <div class="question-text">${formatFraction(question.q)}</div>
-                    ${question.fraction ? `<div class="question-text ltr" style="font-size:1.8em; margin:20px 0;">${formatFraction(question.fraction)}</div>` : ''}
-                    <div class="fraction-input-container">
+                    <div class="question-text">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>
+                    ${question.fraction ? `<div class="question-text ltr" style="font-size:1.8em; margin:20px 0;">${formatFraction(addLineBreakBeforeNumbers(question.fraction))}</div>` : ''}
+                    <div class="fraction-input-container" style="flex-direction: row; gap: 10px; justify-content: center; align-items: center; direction: rtl;">
                         <div class="fraction-input-wrapper">
                             <input type="number" class="fraction-input" id="numeratorInput"
                                    value="${userAnswers[currentQuestionIndex].numerator}"
@@ -565,11 +1408,14 @@
                                    value="${userAnswers[currentQuestionIndex].denominator}"
                                    placeholder="מכנה" min="1">
                         </div>
+                        <input type="number" class="fraction-input" id="wholeInput"
+                               value="${userAnswers[currentQuestionIndex].whole || ''}"
+                               placeholder="שלם" min="0" style="width:80px;">
                     </div>
                 `;
         } else {
             html += `
-                    <div class="question-text ${questionClass}">${formatFraction(question.q)}</div>
+                    <div class="question-text ${questionClass}">${formatFraction(addLineBreakBeforeNumbers(question.q))}</div>
                     <input type="text" class="answer-input" id="answerInput"
                            value="${userAnswers[currentQuestionIndex].text}"
                            placeholder="הכניסי את התשובה כאן">
@@ -579,36 +1425,41 @@
         container.innerHTML = html;
 
         if (question.type === 'fraction') {
+            document.getElementById('wholeInput').addEventListener('input', saveFractionAnswer);
             document.getElementById('numeratorInput').addEventListener('input', saveFractionAnswer);
             document.getElementById('denominatorInput').addEventListener('input', saveFractionAnswer);
-            document.getElementById('numeratorInput').focus();
-        } else {
+            document.getElementById('wholeInput').focus();
+        } else if (question.type !== 'shape' && question.type !== 'shapes') {
             document.getElementById('answerInput').focus();
             document.getElementById('answerInput').addEventListener('input', saveTextAnswer);
         }
-
         updateProgressBar();
         updateNavigationButtons();
     }
 
-    function saveTextAnswer() {
-        userAnswers[currentQuestionIndex].text = document.getElementById('answerInput').value.trim();
-    }
-
     function saveFractionAnswer() {
+        userAnswers[currentQuestionIndex].whole = document.getElementById('wholeInput').value;
         userAnswers[currentQuestionIndex].numerator = document.getElementById('numeratorInput').value;
         userAnswers[currentQuestionIndex].denominator = document.getElementById('denominatorInput').value;
+    }
+
+    function saveTextAnswer() {
+        const input = document.getElementById('answerInput');
+        if (input) {
+            userAnswers[currentQuestionIndex].text = input.value;
+        }
     }
 
     function getUserAnswer(index) {
         const question = currentQuestions[index];
         const answer = userAnswers[index];
-
         if (question.type === 'fraction') {
-            if (answer.numerator && answer.denominator) {
-                return `${answer.numerator}/${answer.denominator}`;
-            }
-            return '';
+            let whole = answer.whole && answer.whole !== '0' ? answer.whole : '';
+            let frac = (answer.numerator && answer.denominator) ? `${answer.numerator}/${answer.denominator}` : '';
+            return (whole && frac) ? `${whole} ${frac}` : (frac || whole || '');
+        }
+        if (question.type === 'shape' || question.type === 'shapes') {
+            return Array.isArray(answer.selectedIds) ? answer.selectedIds.slice().sort().join(',') : '';
         }
         return answer.text;
     }
@@ -668,24 +1519,44 @@
     function showResults() {
         let correctCount = 0;
         const reviewHtml = [];
-
         currentQuestions.forEach((question, index) => {
-            const userAnswer = getUserAnswer(index);
-            const userAns = normalizeAnswer(userAnswer);
-            const correctAns = normalizeAnswer(question.a);
-            const isCorrect = userAns === correctAns;
-
+            const answer = userAnswers[index];
+            let isCorrect = false;
+            let userAnswerDisplay = '';
+            let correctAnswerDisplay = '';
+            if (question.type === 'completion-mc') {
+                isCorrect = answer.text === question.correctLetter;
+                userAnswerDisplay = answer.text || '(לא נבחרה אפשרות)';
+                correctAnswerDisplay = question.correctLetter;
+            } else if (question.type === 'shape' || question.type === 'shapes') {
+                const userIds = Array.isArray(answer.selectedIds) ? answer.selectedIds.slice().sort() : [];
+                const correctIds = Array.isArray(question.correctIds) ? question.correctIds.slice().sort() : [];
+                isCorrect = JSON.stringify(userIds) === JSON.stringify(correctIds);
+                userAnswerDisplay = userIds.length ? userIds.join(', ') : '(לא נבחרו צורות)';
+                correctAnswerDisplay = correctIds.join(', ');
+            } else if (question.type === 'fraction') {
+                const userAns = normalizeAnswer(getUserAnswer(index));
+                const correctAns = normalizeAnswer(question.a);
+                isCorrect = userAns === correctAns;
+                userAnswerDisplay = formatFraction(getUserAnswer(index) || '(לא נענתה)');
+                correctAnswerDisplay = formatFraction(question.a);
+            } else {
+                const userAns = normalizeAnswer(getUserAnswer(index));
+                const correctAns = normalizeAnswer(question.a);
+                isCorrect = userAns === correctAns;
+                userAnswerDisplay = formatFraction(getUserAnswer(index) || '(לא נענתה)');
+                correctAnswerDisplay = formatFraction(question.a);
+            }
             if (isCorrect) correctCount++;
-
             reviewHtml.push(`
-                    <div class="answer-review ${isCorrect ? 'correct-answer' : 'wrong-answer'}">
-                        <strong>שאלה ${index + 1}:</strong> ${formatFraction(question.q)}<br>
-                        ${question.fraction ? `<div style="margin:10px 0;">${formatFraction(question.fraction)}</div>` : ''}
-                        <strong>התשובה שלך:</strong> ${formatFraction(userAnswer || '(לא נענתה)')}<br>
-                        ${!isCorrect ? `<strong>תשובה נכונה:</strong> ${formatFraction(question.a)}<br>` : ''}
-                        <strong>${isCorrect ? '✓ נכון!' : '✗ לא נכון'}</strong>
-                    </div>
-                `);
+                <div class="answer-review ${isCorrect ? 'correct-answer' : 'wrong-answer'}">
+                    <strong>שאלה ${index + 1}:</strong> ${formatFraction(question.q)}<br>
+                    ${question.fraction ? `<div style="margin:10px 0;">${formatFraction(question.fraction)}</div>` : ''}
+                    <strong>התשובה שלך:</strong> ${userAnswerDisplay}<br>
+                    ${!isCorrect ? `<strong>תשובה נכונה:</strong> ${correctAnswerDisplay}<br>` : ''}
+                    <strong>${isCorrect ? '✓ נכון!' : '✗ לא נכון'}</strong>
+                </div>
+            `);
         });
 
         const incorrectCount = currentQuestions.length - correctCount;
